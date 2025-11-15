@@ -32,24 +32,15 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* FIXED: Set up the scrolling container */
-        html {
-            overflow: hidden; /* Prevent vertical scrollbar */
-            height: 100%;
-            width: 100%;
-        }
-
         body {
             background-color: var(--bg);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            /* FIXED: Allow horizontal scroll, which Lenis will control */
-            overflow-x: auto;
-            overflow-y: hidden; 
-            overscroll-behavior-x: none;
-            /* Ensure body is full height for scroller */
-            height: 100%;
-            width: 100%;
+            overflow-x: hidden; /* We handle horizontal via transform */
+            overflow-y: hidden; /* Hide scrollbar */
+            overscroll-behavior: none;
+            /* Added for Lenis */
+            height: 100vh;
         }
 
         h1, h2, h3, .era-title { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.03em; }
@@ -71,12 +62,24 @@
         }
 
         /* --- Main Container --- */
+        /* This outer wrapper is used to set the full 'scrollable' height */
+        .outer-wrapper {
+             /* This height is what GSAP will use for scrolling */
+             height: 500vh; 
+             width: 100vw;
+             position: relative;
+        }
+
         .wrapper {
             display: flex;
             flex-wrap: nowrap;
             height: 100vh;
             width: max-content; /* Will stretch based on content */
-            will-change: transform; /* Hint for smooth animation */
+            will-change: transform;
+            /* This is the part GSAP will move */
+            position: fixed;
+            top: 0;
+            left: 0;
         }
 
         /* --- Era Sections --- */
@@ -128,9 +131,6 @@
             display: flex;
             gap: 2rem;
             padding-left: 2rem;
-            /* FIXED: Add this for the parallax effect */
-            opacity: 0; 
-            transform: translateX(100px);
         }
 
         .event-card {
@@ -170,7 +170,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            flex-grow: 1; /* FIXED: Make sure it fills remaining space */
+            height: 50%;
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
 
@@ -188,7 +188,7 @@
         .card-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
         .card-summary { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         
-        .card-footer { margin-top: 1rem; /* FIXED: was auto, which is less predictable */ display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-main); opacity: 0.7; }
+        .card-footer { margin-top: auto; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-main); opacity: 0.7; }
         .btn-read { margin-left: auto; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; transition: 0.3s; }
         .event-card:hover .btn-read { background: #fff; color: #000; }
 
@@ -210,6 +210,7 @@
         [data-era="agent"] .era-label.highlight { box-shadow: 0 0 15px rgba(245,158,11,0.4); }
         [data-era="agent"] .era-title.highlight { text-shadow: 0 0 20px rgba(245,158,11,0.5); }
         [data-era="agent"] .card-content.highlight { border-top: 2px solid var(--accent-agent); }
+
 
         /* --- UI Elements --- */
         .nav-rail {
@@ -254,7 +255,7 @@
             transition: 0.3s;
         }
         .search-bar:focus-within { width: 400px; border-color: #fff; }
-        .search-bar input { background: transparent; border: none; color: #fff; outline: none; width: 100%; font-family: 'Inter', sans-serif; }
+        .search-bar input { background: transparent; border: none; color: #fff; outline: none; width: 100%; font-family: 'Inter', sans-serif;}
 
         /* --- Modal --- */
         .modal-overlay {
@@ -322,16 +323,21 @@
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            /* FIXED: Revert to vertical scrolling on mobile for usability */
-            html, body {
-                overflow: auto;
+            /* On mobile, we switch to vertical scrolling */
+            body {
+                overflow-y: auto;
+                overflow-x: hidden;
                 height: auto;
-                width: 100%;
             }
-            .wrapper { 
-                flex-direction: column; 
-                height: auto; 
-                width: 100vw; 
+            .outer-wrapper {
+                height: auto;
+            }
+            .wrapper {
+                flex-direction: column;
+                position: relative; /* No longer fixed */
+                height: auto;
+                width: 100vw;
+                transform: none !important; /* Disable GSAP transform */
             }
             .era-section { 
                 padding: 5rem 20px; 
@@ -358,8 +364,6 @@
                 flex-wrap: nowrap;
                 -webkit-overflow-scrolling: touch;
                 scroll-snap-type: x mandatory;
-                opacity: 1; /* Disable intro animation */
-                transform: none;
             }
             .event-card { 
                 width: 280px; 
@@ -383,10 +387,6 @@
             .nav-rail { display: none; }
             .search-bar { width: 90vw; }
             .search-bar:focus-within { width: 90vw; }
-
-            /* Add class to disable GSAP on mobile */
-            body:not(.gsap-enabled) .era-intro { opacity: 1; transform: none; }
-            body:not(.gsap-enabled) .cards-wrapper { opacity: 1; transform: none; }
         }
     </style>
 </head>
@@ -400,61 +400,62 @@
         <input type="text" id="search-input" placeholder="Search (e.g., 'DeepSeek', 'GPT-5')...">
     </div>
 
-    <div class="wrapper">
-        
-        <section class="era-section" data-era="dream">
-            <div class="era-intro">
-                <span class="era-label">1950 – 1974</span>
-                <h2 class="era-title">The Dream</h2>
-                <p class="era-desc">From Turing's imitation game to the first neural networks. A time of boundless optimism where machines were taught to play checkers and speak simple English.</p>
-            </div>
-            <div class="cards-wrapper" id="era-1-cards"></div>
-        </section>
+    <div class="outer-wrapper">
+        <div class="wrapper">
+            
+            <section class="era-section" data-era="dream">
+                <div class="era-intro">
+                    <span class="era-label">1950 – 1974</span>
+                    <h2 class="era-title">The Dream</h2>
+                    <p class="era-desc">From Turing's imitation game to the first neural networks. A time of boundless optimism where machines were taught to play checkers and speak simple English.</p>
+                </div>
+                <div class="cards-wrapper" id="era-1-cards"></div>
+            </section>
 
-        <section class="era-section" data-era="winters">
-            <div class="era-intro">
-                <span class="era-label">1974 – 1997</span>
-                <h2 class="era-title">Winters &amp; Experts</h2>
-                <p class="era-desc">Funding dried up as promises fell short. The field pivoted to logic-based "Expert Systems" until Deep Blue shocked the world by defeating a chess grandmaster.</p>
-            </div>
-            <div class="cards-wrapper" id="era-2-cards"></div>
-        </section>
+            <section class="era-section" data-era="winters">
+                <div class="era-intro">
+                    <span class="era-label">1974 – 1997</span>
+                    <h2 class="era-title">Winters &amp; Experts</h2>
+                    <p class="era-desc">Funding dried up as promises fell short. The field pivoted to logic-based "Expert Systems" until Deep Blue shocked the world by defeating a chess grandmaster.</p>
+                </div>
+                <div class="cards-wrapper" id="era-2-cards"></div>
+            </section>
 
-        <section class="era-section" data-era="deep">
-            <div class="era-intro">
-                <span class="era-label">1997 – 2020</span>
-                <h2 class="era-title">Deep Learning</h2>
-                <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
-            </div>
-            <div class="cards-wrapper" id="era-3-cards"></div>
-        </section>
+            <section class="era-section" data-era="deep">
+                <div class="era-intro">
+                    <span class="era-label">1997 – 2020</span>
+                    <h2 class="era-title">Deep Learning</h2>
+                    <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
+                </div>
+                <div class="cards-wrapper" id="era-3-cards"></div>
+            </section>
 
-        <section class="era-section" data-era="gen">
-            <div class="era-intro">
-                <span class="era-label">2020 – 2024</span>
-                <h2 class="era-title">Generative Explosion</h2>
-                <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
-            </div>
-            <div class="cards-wrapper" id="era-4-cards"></div>
-        </section>
+            <section class="era-section" data-era="gen">
+                <div class="era-intro">
+                    <span class="era-label">2020 – 2024</span>
+                    <h2 class="era-title">Generative Explosion</h2>
+                    <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
+                </div>
+                <div class="cards-wrapper" id="era-4-cards"></div>
+            </section>
 
-         <section class="era-section" data-era="agent">
-            <div class="era-intro">
-                <span class="era-label highlight">2025</span>
-                <h2 class="era-title highlight">Reasoning &amp; Agents</h2>
-                <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
-            </div>
-            <div class="cards-wrapper" id="era-5-cards"></div>
-        </section>
+             <section class="era-section" data-era="agent">
+                <div class="era-intro">
+                    <span class="era-label highlight">2025</span>
+                    <h2 class="era-title highlight">Reasoning &amp; Agents</h2>
+                    <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
+                </div>
+                <div class="cards-wrapper" id="era-5-cards"></div>
+            </section>
 
-        <div style="width: 10vw; flex-shrink: 0;"></div>
+            <div style="width: 10vw; flex-shrink: 0;"></div>
+        </div>
     </div>
 
     <nav class="nav-rail" id="nav-rail"></nav>
 
     <div class="modal-overlay" id="modal" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-content" onclick="event.stopPropagation()"> <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-image-container">
                 <img src="" alt="" class="modal-image" id="m-img">
             </div>
@@ -562,8 +563,9 @@
         ];
 
         // --- 2. INITIALIZATION & RENDERING ---
+        const wrapper = document.querySelector('.wrapper');
         const navRail = document.getElementById('nav-rail');
-        let isMobile = window.innerWidth <= 768;
+        const isMobile = window.innerWidth <= 768;
 
         function renderCards() {
             events.forEach((evt, index) => {
@@ -577,7 +579,7 @@
 
                 let contentClass = "card-content";
                 if(evt.era === 5) {
-                    contentClass += " highlight";
+                    contentClass += " highlight"; // Adds .highlight class for CSS hook
                 }
 
                 card.innerHTML = `
@@ -604,12 +606,11 @@
                 dot.className = 'nav-dot';
                 dot.title = section.querySelector('.era-title').innerText;
                 dot.onclick = () => {
-                    const offset = section.offsetLeft;
-                    // FIXED: Use GSAP's ScrollToPlugin, which works with Lenis
-                    gsap.to(lenis, {
-                        target: offset,
-                        duration: 2,
-                        ease: "power3.inOut"
+                    // Scroll to that section using GSAP
+                    gsap.to(window, { 
+                        scrollTo: { y: section.offsetTop, autoKill: false }, 
+                        duration: 1.5, 
+                        ease: "power2.inOut"
                     });
                 };
                 navRail.appendChild(dot);
@@ -623,29 +624,10 @@
         renderCards();
         
         // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
-        
-        // Only run the desktop scrolling logic if we are not on mobile
         let lenis;
-        if (!isMobile) {
-            document.body.classList.add('gsap-enabled');
-            
-            lenis = new Lenis({
-                wrapper: document.body, // Scroll the whole body
-                content: document.querySelector('.wrapper'), // The content is the .wrapper
-                orientation: 'horizontal',
-                gestureOrientation: 'vertical', // Map vertical wheel to horizontal
-                smoothWheel: true,
-                mouseMultiplier: 1.0,
-                smoothTouch: true,
-                touchMultiplier: 1.5,
-            });
 
-            // FIXED: This is the magic code that connects Lenis to GSAP's animation ticker
-            lenis.on('scroll', ScrollTrigger.update);
-            gsap.ticker.add((time) => {
-              lenis.raf(time * 1000); // Lenis uses milliseconds
-            });
-            gsap.ticker.lagSmoothing(0);
+        if (!isMobile) {
+            lenis = new Lenis();
 
             // This function runs the animation loop for Lenis
             function raf(time) {
@@ -653,23 +635,28 @@
                 requestAnimationFrame(raf);
             }
             requestAnimationFrame(raf);
-            
-            renderNav(); // Only render nav dots on desktop
 
-        } else {
-            // On mobile, we don't initialize Lenis or GSAP animations
-            // We rely on the native CSS scroll-snap in the .cards-wrapper
-        }
+            // This is the main horizontal scroll animation
+            gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+            let sections = gsap.utils.toArray(".era-section");
+            let horizontalScroll = gsap.to(wrapper, {
+                xPercent: -100 * (sections.length - 1),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".outer-wrapper",
+                    pin: true,
+                    scrub: 1,
+                    snap: 1 / (sections.length - 1),
+                    end: () => "+=" + (wrapper.offsetWidth - window.innerWidth)
+                }
+            });
 
-        // --- 4. ANIMATIONS & PARALLAX ---
+            // Render nav dots only on desktop
+            renderNav();
+
+            // --- 4. ANIMATIONS & PARALLAX ---
         
-        // Register GSAP Plugin
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-        
-        if (!isMobile) {
-            // Animate sections entering
-            const sections = document.querySelectorAll('.era-section');
             sections.forEach((section, i) => {
                 const text = section.querySelector('.era-intro');
                 const cards = section.querySelector('.cards-wrapper');
@@ -678,38 +665,35 @@
                 gsap.to(text, {
                     scrollTrigger: {
                         trigger: section,
-                        containerAnimation: gsap.to(lenis, {duration: 1.0}), // FIXED: Link to Lenis
-                        horizontal: true, // IMPORTANT
-                        start: "left 80%", // Start when 80% of the section is visible
-                        end: "left 40%",
-                        scrub: 1,
+                        containerAnimation: horizontalScroll,
+                        start: "left center",
+                        end: "right center",
+                        toggleActions: "play reverse play reverse",
                         // markers: true, // Uncomment to debug
                     },
                     opacity: 1,
                     y: 0,
+                    duration: 1,
                     ease: "power3.out"
                 });
 
-                // Parallax and fade for cards
-                gsap.to(cards, {
+                // Parallax for cards
+                gsap.from(cards, {
                     scrollTrigger: {
                         trigger: section,
-                        containerAnimation: gsap.to(lenis, {duration: 1.0}), // FIXED: Link to Lenis
-                        horizontal: true,
-                        start: "left 90%", // Start a bit later than text
-                        end: "center 50%",
+                        containerAnimation: horizontalScroll,
+                        start: "left 80%",
+                        end: "center center",
                         scrub: 1,
                     },
-                    x: 0,
-                    opacity: 1,
-                    ease: "power3.out"
+                    x: 100,
+                    opacity: 0
                 });
                 
                 // Update Nav Dots on scroll
                 ScrollTrigger.create({
                     trigger: section,
-                    containerAnimation: gsap.to(lenis, {duration: 1.0}), // FIXED: Link to Lenis
-                    horizontal: true,
+                    containerAnimation: horizontalScroll,
                     start: "left center",
                     end: "right center",
                     onToggle: (self) => {
@@ -720,7 +704,7 @@
                     }
                 });
             });
-        }
+        } // End if(!isMobile)
 
 
         // --- 5. MODAL LOGIC ---
@@ -800,16 +784,11 @@
             // Don't scroll if user is typing in search
             if (e.target === searchInput) return;
             
-            // Only use keyboard nav if Lenis is active (i.e., on desktop)
-            if (lenis) {
-                if (e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    lenis.scroll += 500;
-                }
-                if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    lenis.scroll -= 500;
-                }
+            if (e.key === 'ArrowRight' && lenis) {
+                lenis.scrollTo(lenis.scroll + 500);
+            }
+            if (e.key === 'ArrowLeft' && lenis) {
+                lenis.scrollTo(lenis.scroll - 500);
             }
             if (e.key === 'Escape') {
                 closeModal();
