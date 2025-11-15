@@ -39,7 +39,6 @@
             overflow-x: hidden; /* We handle horizontal via transform */
             overflow-y: hidden; /* Hide scrollbar */
             overscroll-behavior: none;
-            /* Added for Lenis */
             height: 100vh;
         }
 
@@ -62,10 +61,8 @@
         }
 
         /* --- Main Container --- */
-        /* This outer wrapper is used to set the full 'scrollable' height */
         .outer-wrapper {
-             /* This height is what GSAP will use for scrolling */
-             height: 500vh; 
+             height: 500vh; /* This is the "fake" height that we scroll */
              width: 100vw;
              position: relative;
         }
@@ -76,7 +73,6 @@
             height: 100vh;
             width: max-content; /* Will stretch based on content */
             will-change: transform;
-            /* This is the part GSAP will move */
             position: fixed;
             top: 0;
             left: 0;
@@ -131,6 +127,9 @@
             display: flex;
             gap: 2rem;
             padding-left: 2rem;
+            /* Added for GSAP animation */
+            opacity: 0;
+            transform: translateX(100px);
         }
 
         .event-card {
@@ -321,73 +320,8 @@
         .stat-item i { color: var(--text-muted); margin-right: 8px; }
         .stat-text { font-size: 0.9rem; }
 
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            /* On mobile, we switch to vertical scrolling */
-            body {
-                overflow-y: auto;
-                overflow-x: hidden;
-                height: auto;
-            }
-            .outer-wrapper {
-                height: auto;
-            }
-            .wrapper {
-                flex-direction: column;
-                position: relative; /* No longer fixed */
-                height: auto;
-                width: 100vw;
-                transform: none !important; /* Disable GSAP transform */
-            }
-            .era-section { 
-                padding: 5rem 20px; 
-                min-width: 100vw; 
-                height: auto; 
-                flex-direction: column; 
-                justify-content: center; 
-                text-align: center; 
-            }
-            .era-intro { 
-                min-width: 100%; 
-                padding: 0; 
-                margin-bottom: 2rem; 
-                opacity: 1; /* Disable intro animation */
-                transform: none;
-            }
-            .cards-wrapper { 
-                overflow-x: auto; /* Allow card swiping */
-                overflow-y: hidden;
-                padding-left: 20px; /* Add padding for swipe start */
-                padding-bottom: 1rem;
-                justify-content: flex-start; 
-                width: 100vw;
-                flex-wrap: nowrap;
-                -webkit-overflow-scrolling: touch;
-                scroll-snap-type: x mandatory;
-            }
-            .event-card { 
-                width: 280px; 
-                height: 400px; 
-                margin-right: 15px; 
-                scroll-snap-align: center;
-                flex-shrink: 0;
-            }
-            .modal-content { 
-                grid-template-columns: 1fr; 
-                height: 90vh; 
-                display: flex; 
-                flex-direction: column; 
-            }
-            .modal-image-container { height: 200px; flex-shrink: 0; }
-            .modal-details { padding: 2.5rem 1.5rem 1.5rem 1.5rem; }
-            .modal-title { font-size: 1.8rem; }
-            .stats-grid { grid-template-columns: 1fr; }
-            
-            /* Hide desktop-only scroll elements on mobile */
-            .nav-rail { display: none; }
-            .search-bar { width: 90vw; }
-            .search-bar:focus-within { width: 90vw; }
-        }
+        /* --- MOBILE STYLES REMOVED --- */
+        
     </style>
 </head>
 <body>
@@ -565,7 +499,7 @@
         // --- 2. INITIALIZATION & RENDERING ---
         const wrapper = document.querySelector('.wrapper');
         const navRail = document.getElementById('nav-rail');
-        const isMobile = window.innerWidth <= 768;
+        // REMOVED isMobile CHECK
 
         function renderCards() {
             events.forEach((evt, index) => {
@@ -626,76 +560,83 @@
         // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
         let lenis;
 
-        if (!isMobile) {
-            lenis = new Lenis();
-            
-            // **** START OF FIX ****
-            // This is the "connector" code
-            // It tells ScrollTrigger to use Lenis's scroll position
-            lenis.on('scroll', ScrollTrigger.update);
+        // REMOVED if(!isMobile) - This code will now run for all users
+        
+        // Initialize Lenis
+        lenis = new Lenis();
 
-            // This tells GSAP to update Lenis on every animation frame
-            gsap.ticker.add((time)=>{
-              lenis.raf(time * 1000);
-            })
-            gsap.ticker.lagSmoothing(0);
-            // **** END OF FIX ****
+        // **** START OF FIX ****
+        // This is the "connector" code
+        // It tells ScrollTrigger to use Lenis's scroll position
+        lenis.on('scroll', ScrollTrigger.update);
 
-            // This function runs the animation loop for Lenis
-            function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-            }
+        // This tells GSAP to update Lenis on every animation frame
+        gsap.ticker.add((time)=>{
+            lenis.raf(time * 1000);
+        })
+        gsap.ticker.lagSmoothing(0);
+        // **** END OF FIX ****
+
+
+        // This function runs the animation loop for Lenis
+        function raf(time) {
+            lenis.raf(time);
             requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
 
-            // This is the main horizontal scroll animation
-            gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+        // This is the main horizontal scroll animation
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-            let sections = gsap.utils.toArray(".era-section");
-            let horizontalScroll = gsap.to(wrapper, {
-                xPercent: -100 * (sections.length - 1),
-                ease: "none",
+        let sections = gsap.utils.toArray(".era-section");
+        let horizontalScroll = gsap.to(wrapper, {
+            xPercent: -100 * (sections.length - 1),
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".outer-wrapper",
+                pin: true,
+                scrub: 1,
+                // **** MODIFIED SNAP ****
+                // This tells GSAP to wait for Lenis's momentum
+                // to stop before snapping.
+                snap: {
+                    snapTo: 1 / (sections.length - 1), // Snap to the closest section
+                    duration: { min: 0.2, max: 0.6 },  // Use a duration range
+                    delay: 0.15,                       // Wait 0.15s after scroll stops to snap
+                    ease: "power1.inOut"               // A gentler ease
+                },
+                end: () => "+=" + (wrapper.offsetWidth - window.innerWidth)
+            }
+        });
+
+        // Render nav dots
+        renderNav();
+
+        // --- 4. ANIMATIONS & PARALLAX ---
+    
+        sections.forEach((section, i) => {
+            const text = section.querySelector('.era-intro');
+            const cards = section.querySelector('.cards-wrapper');
+            
+            // Animate the intro text
+            gsap.to(text, {
                 scrollTrigger: {
-                    trigger: ".outer-wrapper",
-                    pin: true,
-                    scrub: 1,
-                    snap: {
-                        snapTo: 1 / (sections.length - 1), // Snap to the closest section
-                        duration: 0.5,                     // Animation duration of the snap
-                        delay: 0.1,                        // Wait 0.1s after scroll stops to snap
-                        ease: "power2.inOut"               // Easing for the snap
-                    },
-                    end: () => "+=" + (wrapper.offsetWidth - window.innerWidth)
-                }
+                    trigger: section,
+                    containerAnimation: horizontalScroll,
+                    start: "left center",
+                    end: "right center",
+                    toggleActions: "play reverse play reverse",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
             });
 
-            // Render nav dots only on desktop
-            renderNav();
-
-            // --- 4. ANIMATIONS & PARALLAX ---
-        
-            sections.forEach((section, i) => {
-                const text = section.querySelector('.era-intro');
-                const cards = section.querySelector('.cards-wrapper');
-                
-                // Animate the intro text
-                gsap.to(text, {
-                    scrollTrigger: {
-                        trigger: section,
-                        containerAnimation: horizontalScroll,
-                        start: "left center",
-                        end: "right center",
-                        toggleActions: "play reverse play reverse",
-                        // markers: true, // Uncomment to debug
-                    },
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    ease: "power3.out"
-                });
-
-                // Parallax for cards
-                gsap.from(cards, {
+            // Parallax for cards
+            gsap.fromTo(cards, 
+                { x: 100, opacity: 0 }, // from state
+                { // to state
                     scrollTrigger: {
                         trigger: section,
                         containerAnimation: horizontalScroll,
@@ -703,25 +644,27 @@
                         end: "center center",
                         scrub: 1,
                     },
-                    x: 100,
-                    opacity: 0
-                });
-                
-                // Update Nav Dots on scroll
-                ScrollTrigger.create({
-                    trigger: section,
-                    containerAnimation: horizontalScroll,
-                    start: "left center",
-                    end: "right center",
-                    onToggle: (self) => {
-                        if(self.isActive) {
-                            document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
-                            document.querySelectorAll('.nav-dot')[i]?.classList.add('active');
-                        }
+                    x: 0,
+                    opacity: 1,
+                    ease: "power3.out" // Use a matching ease
+                }
+            );
+            
+            // Update Nav Dots on scroll
+            ScrollTrigger.create({
+                trigger: section,
+                containerAnimation: horizontalScroll,
+                start: "left center",
+                end: "right center",
+                onToggle: (self) => {
+                    if(self.isActive) {
+                        document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
+                        document.querySelectorAll('.nav-dot')[i]?.classList.add('active');
                     }
-                });
+                }
             });
-        } // End if(!isMobile)
+        });
+        // End of desktop-only logic
 
 
         // --- 5. MODAL LOGIC ---
@@ -802,10 +745,10 @@
             if (e.target === searchInput) return;
             
             if (e.key === 'ArrowRight' && lenis) {
-                lenis.scrollTo(lenis.scroll + 500);
+                lenis.scrollTo(lenis.scroll + 500, { duration: 0.5 }); // Added duration
             }
             if (e.key === 'ArrowLeft' && lenis) {
-                lenis.scrollTo(lenis.scroll - 500);
+                lenis.scrollTo(lenis.scroll - 500, { duration: 0.5 }); // Added duration
             }
             if (e.key === 'Escape') {
                 closeModal();
@@ -816,4 +759,3 @@
     
 </body>
 </html>
-
