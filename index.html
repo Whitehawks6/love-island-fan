@@ -628,6 +628,18 @@
 
         if (!isMobile) {
             lenis = new Lenis();
+            
+            // **** START OF FIX ****
+            // This is the "connector" code
+            // It tells ScrollTrigger to use Lenis's scroll position
+            lenis.on('scroll', ScrollTrigger.update);
+
+            // This tells GSAP to update Lenis on every animation frame
+            gsap.ticker.add((time)=>{
+              lenis.raf(time * 1000);
+            })
+            gsap.ticker.lagSmoothing(0);
+            // **** END OF FIX ****
 
             // This function runs the animation loop for Lenis
             function raf(time) {
@@ -647,7 +659,12 @@
                     trigger: ".outer-wrapper",
                     pin: true,
                     scrub: 1,
-                    snap: 1 / (sections.length - 1),
+                    snap: {
+                        snapTo: 1 / (sections.length - 1), // Snap to the closest section
+                        duration: 0.5,                     // Animation duration of the snap
+                        delay: 0.1,                        // Wait 0.1s after scroll stops to snap
+                        ease: "power2.inOut"               // Easing for the snap
+                    },
                     end: () => "+=" + (wrapper.offsetWidth - window.innerWidth)
                 }
             });
@@ -799,3 +816,4 @@
     
 </body>
 </html>
+
