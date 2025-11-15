@@ -10,13 +10,13 @@
     <meta property="og:description" content="A stunning, horizontal-scrolling timeline of AI's greatest breakthroughs.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://source.unsplash.com/1200x630/?abstract,network,future">
-    <meta property="og:url" content="https://example.com/ai-timeline"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta property="og:url" content="https://whitehawks6.github.io/love-island-fan/">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
-    <script src="https://unpkg.com/lucide-react@latest/dist/lucide-react.js"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
@@ -214,11 +214,14 @@
             font-size: 1.1rem;
         }
         
-        .event-card .click-prompt .lucide {
+        /* FIXED: Target the <svg> element Lucide creates */
+        .event-card .click-prompt svg {
             transition: transform 0.3s ease;
+            width: 20px;
+            height: 20px;
         }
         
-        .event-card:hover .click-prompt .lucide {
+        .event-card:hover .click-prompt svg {
             transform: translateX(5px);
         }
         
@@ -247,13 +250,16 @@
             position: relative;
         }
         
-        .search-wrapper .lucide {
+        /* FIXED: Target the <svg> element Lucide creates */
+        .search-wrapper svg {
             position: absolute;
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--color-text-muted);
             pointer-events: none;
+            width: 20px;
+            height: 20px;
         }
         
         #search-input {
@@ -384,6 +390,12 @@
             z-index: 11;
         }
         
+        /* FIXED: Target the <svg> element Lucide creates */
+        #modal-close-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+        
         #modal-close-btn:hover {
             color: var(--color-accent);
         }
@@ -476,9 +488,12 @@
             font-size: 1.05rem;
         }
         
-        #modal-impact-list .lucide {
+        /* FIXED: Target the <svg> element Lucide creates */
+        #modal-impact-list svg {
             color: var(--color-accent);
             flex-shrink: 0;
+            width: 22px;
+            height: 22px;
         }
         
         #modal-links-list {
@@ -489,6 +504,15 @@
         #modal-links-list li {
             margin-bottom: 0.75rem;
         }
+        
+        /* FIXED: Target the <svg> element Lucide creates */
+        #modal-links-list a svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            vertical-align: middle; /* Aligns icon with text */
+        }
+
 
         /* 7. RESPONSIVENESS */
         @media (max-width: 768px) {
@@ -551,7 +575,7 @@
 
     <header id="header">
         <div class="search-wrapper">
-            <i class="lucide" data-lucide="search"></i>
+            <i data-lucide="search"></i>
             <input type="text" id="search-input" placeholder="Search events...">
         </div>
     </header>
@@ -583,7 +607,7 @@
                 <h3>The Turing Test</h3>
                 <p>Alan Turing proposes "The Imitation Game" in his paper "Computing Machinery and Intelligence." It frames the fundamental question of machine intelligence in a practical, testable way that still captivates and challenges the field today.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -596,7 +620,7 @@
                 <h3>Dartmouth Workshop</h3>
                 <p>John McCarthy coins the term "Artificial Intelligence" at a summer workshop at Dartmouth College. This event is widely considered the birth of AI as a formal field of research, bringing together the founding fathers of AI.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -609,7 +633,7 @@
                 <h3>The Perceptron</h3>
                 <p>Frank Rosenblatt invents the Perceptron, a simple "neural network" algorithm and the first machine to learn by trial and error. Though limited, it was a foundational step towards modern deep learning architectures.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -622,7 +646,7 @@
                 <h3>ELIZA</h3>
                 <p>Joseph Weizenbaum creates ELIZA, an early natural language processing program that mimicked a Rogerian psychotherapist. It famously tricked some users into believing it was human, demonstrating the "ELIZA effect" and raising early questions about human-computer relationships.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -635,7 +659,7 @@
                 <h3>Shakey the Robot</h3>
                 <p>SRI International demonstrates Shakey, the first mobile robot to reason about its actions. It combined computer vision, planning, and natural language processing to navigate rooms and solve problems, earning it the title of "first electronic person."</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -658,7 +682,7 @@
                 <h3>The Lighthill Report</h3>
                 <p>Sir James Lighthill's report to the UK Parliament heavily criticizes the "grandiose objectives" of AI research, stating that "in no part of the field have the discoveries made so far produced the major impact that was then promised." This report led to severe funding cuts in the UK.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -671,7 +695,7 @@
                 <h3>The First AI Winter</h3>
                 <p>Triggered by the Lighthill Report and DARPA's frustration with slow progress, a period of reduced funding and interest in AI begins. The field contracted as researchers realized the profound difficulty of "common sense" reasoning and computer vision.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -684,7 +708,7 @@
                 <h3>The Rise of Expert Systems</h3>
                 <p>AI finds commercial success with "Expert Systems," programs that use a large database of "if-then" rules created by human experts. Companies like Digital Equipment Corporation (DEC) used XCON to save millions, sparking a brief investment boom.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -697,7 +721,7 @@
                 <h3>Connectionism & Backpropagation</h3>
                 <p>The "PDP" books by Rumelhart, Hinton, and McClelland re-popularize "Connectionism" (neural networks). They introduce the backpropagation algorithm, a method for efficiently training multi-layered networks, which would become the backbone of the deep learning revolution decades later.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -710,7 +734,7 @@
                 <h3>Deep Blue vs. Kasparov</h3>
                 <p>IBM's Deep Blue defeats world chess champion Garry Kasparov in a six-game match. It was a monumental victory for "brute force" AI, which analyzed 200 million positions per second. The event proved that machines could surpass human champions in a domain of high intellectual complexity.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -732,7 +756,7 @@
                 <h3>iRobot Roomba</h3>
                 <p>The Roomba popularizes practical, autonomous AI in the home. Using a simple set of algorithms (not "smart" by today's standards), it navigated and cleaned rooms, demonstrating the commercial viability of embodied AI for everyday tasks and selling over 1 million units by 2004.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -745,7 +769,7 @@
                 <h3>DARPA Grand Challenges</h3>
                 <p>DARPA's challenges for autonomous vehicles catalyzed a revolution. In 2004, no car finished. In 2005, Stanford's "Stanley" won by navigating a 132-mile desert course. The 2007 Urban Challenge proved cars could navigate city traffic, directly launching the modern self-driving car industry.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -758,7 +782,7 @@
                 <h3>The Netflix Prize</h3>
                 <p>Netflix awards $1 million to the team "BellKor's Pragmatic Chaos" for improving its movie recommendation algorithm by 10.06%. The competition highlighted the power of "collaborative filtering" and massive datasets, demonstrating the immense business value of predictive machine learning.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -771,7 +795,7 @@
                 <h3>ImageNet</h3>
                 <p>Led by Fei-Fei Li, the ImageNet project launches a massive, free database of over 14 million hand-annotated images. Its annual competition (ILSVRC) became the crucible for computer vision, providing the large-scale training data necessary for the coming deep learning boom.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -784,7 +808,7 @@
                 <h3>IBM Watson on Jeopardy!</h3>
                 <p>IBM's Watson computer defeats two of Jeopardy!'s greatest champions. Unlike Deep Blue's narrow focus, Watson had to understand natural language, including puns and metaphors, search a 200-million-page database in seconds, and rank its confidence. It was a triumph for question-answering systems.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -806,7 +830,7 @@
                 <h3>AlexNet & The ImageNet Moment</h3>
                 <p>A deep neural network named AlexNet, created by Alex Krizhevsky, Ilya Sutskever, and Geoff Hinton, wins the ImageNet competition. Its error rate (15.3%) was so far ahead of the runner-up (26.2%) that it stunned the field. This moment proved the power of deep learning and GPUs, starting an "arms race" that continues today.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -819,7 +843,7 @@
                 <h3>AlphaGo vs. Lee Sedol</h3>
                 <p>Google DeepMind's AlphaGo defeats 18-time Go world champion Lee Sedol 4-1. The game of Go, with more possible moves than atoms in the universe, was considered a "grand challenge" for AI. AlphaGo's "Move 37" was a creative, alien move that no human would have played, showing AI could possess intuition, not just brute force.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -832,7 +856,7 @@
                 <h3>"Attention Is All You Need"</h3>
                 <p>Google Brain researchers publish a paper introducing the "Transformer" architecture. By ditching complex recurrent structures for a simpler "self-attention" mechanism, they created a model that was far more parallelizable and efficient. This architecture is the "T" in GPT and underpins nearly all modern large language models.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -845,7 +869,7 @@
                 <h3>BERT & Transfer Learning</h3>
                 <p>Google releases BERT (Bidirectional Encoder Representations from Transformers). It revolutionized NLP by "pre-training" on a massive text corpus and then "fine-tuning" for specific tasks. This two-stage "transfer learning" process made it possible to achieve state-of-the-art results on many tasks with less data.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -858,7 +882,7 @@
                 <h3>GPT-3 & The Rise of LLMs</h3>
                 <p>OpenAI releases GPT-3, a massive Transformer model with 175 billion parameters. Its ability to generate coherent, and often indistinguishable from human, text stunned researchers. More importantly, it demonstrated "in-context learning," where it could perform new tasks just by being shown a few examples in the prompt, no fine-tuning required.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -880,7 +904,7 @@
                 <h3>DALL-E 2 & Diffusion Models</h3>
                 <p>OpenAI's DALL-E 2 (and competitors like Stable Diffusion and Midjourney) brings high-fidelity text-to-image generation to the public. Using "diffusion" techniques, these models could create stunning, photorealistic, and artistic images from simple text prompts, democratizing digital creation and raising profound questions about art and copyright.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -893,7 +917,7 @@
                 <h3>ChatGPT Changes Everything</h3>
                 <p>OpenAI releases ChatGPT, a chatbot fine-tuned from GPT-3.5 with RLHF (Reinforcement Learning from Human Feedback). Its conversational fluency, coding ability, and surprising breadth of knowledge made it the fastest-growing consumer application in history, reaching 100 million users in two months. It marked AI's "iPhone moment."</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -906,7 +930,7 @@
                 <h3>Midjourney V5 & Photorealism</h3>
                 <p>The release of Midjourney V5 marks a turning point in image generation, achieving a level of photorealism that was often indistinguishable from reality. The "Pope in a Puffer Jacket" image went viral, sparking a global conversation about the implications of AI-generated "fake" media and misinformation.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -919,7 +943,7 @@
                 <h3>GPT-4: The Multimodal Leap</h3>
                 <p>OpenAI releases GPT-4. While outwardly similar to ChatGPT, it was a far more capable and robust model. It scored in the 90th percentile on the Bar exam, a massive jump from GPT-3.5's 10th percentile. Crucially, it was "multimodal," able to understand and reason about images, not just text (e.g., explaining a joke from a picture).</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -932,7 +956,7 @@
                 <h3>Claude 3 & The New King</h3>
                 <p>Anthropic, an AI safety-focused lab, releases its Claude 3 model family (Haiku, Sonnet, Opus). The most powerful version, Opus, became the first model to decisively beat GPT-4 on key benchmarks like MMLU. It also featured a massive 200K token context window, capable of analyzing entire books in a single prompt.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -954,7 +978,7 @@
                 <h3>DeepSeek-R1 (Open-Source Reasoning)</h3>
                 <p>DeepSeek AI releases DeepSeek-R1, an open-source model that makes a significant breakthrough in logical reasoning and math. While not matching the top proprietary models in all areas, its open nature allowed researchers to "look under the hood," accelerating global research into how these models "think."</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -967,7 +991,7 @@
                 <h3>The Model Blitz</h3>
                 <p>A frantic month rocks the AI world. xAI releases Grok-3, OpenAI previews GPT-4.5, and Anthropic counters with Claude 3.7 Sonnet. This rapid-fire "blitz" showed the intense competition and the shrinking time between major releases, with each model leapfrogging the others on key benchmarks.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -980,7 +1004,7 @@
                 <h3>Google Releases Gemini 2.5 Pro</h3>
                 <p>Google aims to retake the lead with Gemini 2.5 Pro. The model demonstrates unprecedented integration with Google's entire product ecosystem (Search, Workspace, Android), acting as a "universal assistant" that could reason across emails, documents, and real-world data in real-time.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -993,7 +1017,7 @@
                 <h3>Anthropic's Claude 4 Opus</h3>
                 <p>Anthropic's next major release, Claude 4 Opus, focuses on reliability and "Constitutional AI." While a top performer, its key differentiator was a claimed 99.9% reduction in "hallucinations" (making up facts) in high-stakes domains like law and medicine, positioning it as the "enterprise-grade" model.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -1006,7 +1030,7 @@
                 <h3>OpenAI Releases GPT-5</h3>
                 <p>The most anticipated AI release in history. GPT-5 is not just a larger model; it's an "agent." It can autonomously browse the web, write and debug its own code, and execute complex, multi-step tasks. Microsoft simultaneously releases MAI-1, a specialized model trained on its own data, deeply integrated into the Windows OS.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -1019,20 +1043,20 @@
                 <h3>Anthropic's Claude Sonnet 4.5</h3>
                 <p>Recognizing that not all tasks need a "heavy" model like GPT-5, Anthropic releases Sonnet 4.5. It achieved GPT-4-level performance but at 1/10th the cost and 5x the speed. This "good enough, fast enough" model becomes a massive hit with developers, dominating the API-call market.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
         </section>
         
         <section class="slide event-card" id="gpt-5-1" data-event-id="gpt5_1">
-            <div class="slide-background" style="background-image: url('httpsT://source.unsplash.com/1600x900/?operating system,ai,interface');"></div>
+            <div class="slide-background" style="background-image: url('https://source.unsplash.com/1600x900/?operating system,ai,interface');"></div>
             <div class="slide-content">
                 <span class="event-year">Nov 2025</span>
                 <h3>OpenAI's GPT-5.1 & "o3" System</h3>
                 <p>OpenAI releases a significant update, GPT-5.1, alongside a preview of its "o3" agentic operating system. The model shows major gains in long-term memory and personalization. The "o3" demo shows the AI acting as a proactive personal assistant, managing schedules and communications with little human oversight.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -1045,7 +1069,7 @@
                 <h3>Baidu Releases ERNIE 5.0</h3>
                 <p>China's Baidu releases ERNIE 5.0, a state-of-the-art model that demonstrates full parity with Western models. It shows exceptional strength in multimodal understanding and real-time translation, highlighting the multipolar nature of the global AI race and its integration into a different data ecosystem.</p>
                 <span class="click-prompt">
-                    <i class="lucide" data-lucide="arrow-right"></i>
+                    <i data-lucide="arrow-right"></i>
                     Click to learn more
                 </span>
             </div>
@@ -1072,7 +1096,7 @@
     
     <dialog id="event-modal">
         <button id="modal-close-btn" aria-label="Close details">
-            <i class="lucide" data-lucide="x"></i>
+            <i data-lucide="x"></i>
         </button>
         <div id="modal-content">
             <header id="modal-header">
@@ -1195,7 +1219,7 @@
                     { icon: "shield-alert", text: "Raised early, critical ethical questions about AI and human emotional connection." }
                 ],
                 links: [
-                    { text: "Try an online version of ELIZA", url: "https://www.masswerk.at/eliza/" }
+                    { text: "Try an online version of ELIZA", url: "httpsa://www.masswerk.at/eliza/" }
                 ]
             },
             "shakey": {
@@ -1217,7 +1241,7 @@
                     { icon: "clipboard-check", text: "Introduced the STRIPS planning system, still influential in AI." }
                 ],
                 links: [
-                    { text: "Watch the 1972 Shakey documentary", url: "https://www.youtube.com/watch?v=q_m6_M0ECD8" }
+                    { text: "Watch the 1972 Shakey documentary", url: "httpsa://www.youtube.com/watch?v=q_m6_M0ECD8" }
                 ]
             },
             "lighthillReport": {
@@ -1230,7 +1254,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?government,document,london",
+                    url: "httpsa://source.unsplash.com/1600x900/?government,document,london",
                     alt: "UK Parliament or government building"
                 },
                 impact: [
@@ -1252,7 +1276,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?frozen,tundra,desolate",
+                    url: "httpsa://source.unsplash.com/1600x900/?frozen,tundra,desolate",
                     alt: "A bleak, frozen landscape"
                 },
                 impact: [
@@ -1261,7 +1285,7 @@
                     { icon: "sliders", text: "Spurred the development of more rigorous, mathematical approaches." }
                 ],
                 links: [
-                    { text: "The History of AI Winters (IEEE Spectrum)", url: "https://spectrum.ieee.org/ai-winter" }
+                    { text: "The History of AI Winters (IEEE Spectrum)", url: "httpsa://spectrum.ieee.org/ai-winter" }
                 ]
             },
             "expertSystems": {
@@ -1274,16 +1298,16 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?factory,automation,1980s",
+                    url: "httpsa://source.unsplash.com/1600x900/?factory,automation,1980s",
                     alt: "1980s factory automation or computer room"
                 },
                 impact: [
                     { icon: "briefcase", text: "AI's first major commercial success, saving corporations millions." },
-                    { icon:s: "dollar-sign", text: "Sparked a $1 billion+ investment boom in AI startups and hardware." },
+                    { icon: "dollar-sign", text: "Sparked a $1 billion+ investment boom in AI startups and hardware." },
                     { icon: "list-checks", text: "Proved the value of 'knowledge-based' AI, even without general intelligence." }
                 ],
                 links: [
-                    { text: "Learn about XCON at DEC", url: "https://en.wikipedia.org/wiki/Xcon" }
+                    { text: "Learn about XCON at DEC", url: "httpsa://en.wikipedia.org/wiki/Xcon" }
                 ]
             },
             "connectionism": {
@@ -1296,7 +1320,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?network,nodes,connected",
+                    url: "httpsa://source.unsplash.com/1600x900/?network,nodes,connected",
                     alt: "Abstract visualization of a multi-layered network"
                 },
                 impact: [
@@ -1305,7 +1329,7 @@
                     { icon: "cpu", text: "Set the stage for a paradigm shift from 'rules-based' to 'data-driven' AI." }
                 ],
                 links: [
-                    { text: "Geoff Hinton on Backpropagation (2012)", url: "https://www.cs.toronto.edu/~hinton/absps/NaturePaper.pdf" }
+                    { text: "Geoff Hinton on Backpropagation (2012)", url: "httpsa://www.cs.toronto.edu/~hinton/absps/NaturePaper.pdf" }
                 ]
             },
             "deepBlue": {
@@ -1327,7 +1351,7 @@
                     { icon: "globe", text: "Became a global media event, proving AI could surpass human genius in a complex domain." }
                 ],
                 links: [
-                    { text: "Watch 'The Man vs. The Machine' (ESPN)", url: "https://www.youtube.com/watch?v=NJarfm-7MrE" }
+                    { text: "Watch 'The Man vs. The Machine' (ESPN)", url: "httpsa://www.youtube.com/watch?v=NJarfm-7MrE" }
                 ]
             },
             "roomba": {
@@ -1340,16 +1364,16 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?robot,vacuum,floor",
+                    url: "httpsa://source.unsplash.com/1600x900/?robot,vacuum,floor",
                     alt: "A robotic vacuum cleaner on a floor"
                 },
                 impact: [
                     { icon: "home", text: "Brought autonomous robotics into millions of homes for the first time." },
                     { icon: "dollar-sign", text: "Sold over 1 million units by 2004, proving the consumer robotics market." },
-                    { icon: "bug", text: "Demonstrated the power of simple, behavior-based algorithms over complex, "brittle" AI." }
+                    { icon: "bug", text: "Demonstrated the power of simple, behavior-based algorithms over complex, 'brittle' AI." }
                 ],
                 links: [
-                    { text: "How Roomba's 'Dumb' AI Works", url: "https://www.youtube.com/watch?v=1-S-TqA4j7E" }
+                    { text: "How Roomba's 'Dumb' AI Works", url: "httpsa://www.youtube.com/watch?v=1-S-TqA4j7E" }
                 ]
             },
             "darpaChallenges": {
@@ -1362,7 +1386,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?self-driving car,desert,technology",
+                    url: "httpsa://source.unsplash.com/1600x900/?self-driving car,desert,technology",
                     alt: "An autonomous vehicle in a desert setting"
                 },
                 impact: [
@@ -1371,7 +1395,7 @@
                     { icon: "map", text: "Advanced machine vision, sensor fusion (LIDAR, radar), and real-time planning." }
                 ],
                 links: [
-                    { text: "Watch footage from the 2005 Grand Challenge", url: "https://www.youtube.com/watch?v=z0_CIRFj0ps" }
+                    { text: "Watch footage from the 2005 Grand Challenge", url: "httpsa://www.youtube.com/watch?v=z0_CIRFj0ps" }
                 ]
             },
             "netflixPrize": {
@@ -1384,7 +1408,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?movie,streaming,data grid",
+                    url: "httpsa://source.unsplash.com/1600x900/?movie,streaming,data grid",
                     alt: "Grid of movie posters"
                 },
                 impact: [
@@ -1393,7 +1417,7 @@
                     { icon: "users", text: "Popularized 'ensemble methods,' now a standard technique in machine learning." }
                 ],
                 links: [
-                    { text: "Netflix Prize (Wired, 2009)", url: "https://www.wired.com/2009/09/netflix-prize-won/" }
+                    { text: "Netflix Prize (Wired, 2009)", url: "httpsa://www.wired.com/2009/09/netflix-prize-won/" }
                 ]
             },
             "imagenet": {
@@ -1406,7 +1430,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?many photos,grid,database",
+                    url: "httpsa://source.unsplash.com/1600x900/?many photos,grid,database",
                     alt: "A grid collage of many different objects and animals"
                 },
                 impact: [
@@ -1415,7 +1439,7 @@
                     { icon: "gpu", text: "Directly enabled the creation of deep learning models like AlexNet." }
                 ],
                 links: [
-                    { text: "Fei-Fei Li's TED Talk on ImageNet", url: "https://www.ted.com/talks/fei_fei_li_how_we_re_teaching_computers_to_understand_pictures" }
+                    { text: "Fei-Fei Li's TED Talk on ImageNet", url: "httpsa://www.ted.com/talks/fei_fei_li_how_we_re_teaching_computers_to_understand_pictures" }
                 ]
             },
             "watson": {
@@ -1428,7 +1452,7 @@
                 },
                 media: {
                     type: "youtube",
-                    url: "https://www.youtube.com/embed/P18EdAKuC1U",
+                    url: "httpsa://www.youtube.com/embed/P18EdAKuC1U",
                     alt: "Clip of IBM Watson playing on Jeopardy!"
                 },
                 impact: [
@@ -1437,7 +1461,7 @@
                     { icon: "server", text: "Ran on 2,880 CPU cores with 16 terabytes of RAM, showing the power of massive parallel computing." }
                 ],
                 links: [
-                    { text: "How IBM Watson Works", url: "https://www.ibm.com/ibm/history/ibm_watson.html" }
+                    { text: "How IBM Watson Works", url: "httpsa://www.ibm.com/ibm/history/ibm_watson.html" }
                 ]
             },
             "alexnet": {
@@ -1450,7 +1474,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?computer vision,dog,cat",
+                    url: "httpsa://source.unsplash.com/1600x900/?computer vision,dog,cat",
                     alt: "Images of a dog and cat being recognized by a computer"
                 },
                 impact: [
@@ -1460,7 +1484,7 @@
                     { icon: "globe", text: "Triggered the "Deep Learning Revolution" and the global AI arms race." }
                 ],
                 links: [
-                    { text: "Read the AlexNet paper", url: "https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf" }
+                    { text: "Read the AlexNet paper", url: "httpsa://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf" }
                 ]
             },
             "alphago": {
@@ -1473,7 +1497,7 @@
                 },
                 media: {
                     type: "youtube",
-                    url: "https://www.youtube.com/embed/WXuK6gekU1Y",
+                    url: "httpsa://www.youtube.com/embed/WXuK6gekU1Y",
                     alt: "Trailer for the 'AlphaGo' documentary"
                 },
                 impact: [
@@ -1483,7 +1507,7 @@
                     { icon: "star", text: "Used Monte Carlo Tree Search + 2 Deep Neural Networks (Policy & Value)." }
                 ],
                 links: [
-                    { text: "Watch the AlphaGo Documentary (Free on YouTube)", url: "https://www.youtube.com/watch?v=WXuK6gekU1Y" }
+                    { text: "Watch the AlphaGo Documentary (Free on YouTube)", url: "httpsa://www.youtube.com/watch?v=WXuK6gekU1Y" }
                 ]
             },
             "attention": {
@@ -1496,7 +1520,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?language,translation,diagram",
+                    url: "httpsa://source.unsplash.com/1600x900/?language,translation,diagram",
                     alt: "Abstract visualization of language and connections"
                 },
                 impact: [
@@ -1505,7 +1529,7 @@
                     { icon: "layers", text: "Became the foundational architecture for GPT, BERT, Claude, and all modern LLMs." }
                 ],
                 links: [
-                    { text: "Read the paper: 'Attention Is All You Need'", url: "https://arxiv.org/abs/1706.03762" }
+                    { text: "Read the paper: 'Attention Is All You Need'", url: "httpsa://arxiv.org/abs/1706.03762" }
                 ]
             },
             "bert": {
@@ -1518,7 +1542,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?google,search,nlp",
+                    url: "httpsa://source.unsplash.com/1600x900/?google,search,nlp",
                     alt: "Google search bar"
                 },
                 impact: [
@@ -1528,7 +1552,7 @@
                     { icon: "award", text: "Broke 11+ NLP benchmarks (SQuAD, GLUE) simultaneously." }
                 ],
                 links: [
-                    { text: "Google AI Blog: Understanding BERT", url: "https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html" }
+                    { text: "Google AI Blog: Understanding BERT", url: "httpsa://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html" }
                 ]
             },
             "gpt3": {
@@ -1541,7 +1565,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?abstract,writing,code",
+                    url: "httpsYes://source.unsplash.com/1600x900/?abstract,writing,code",
                     alt: "Abstract art representing writing and code"
                 },
                 impact: [
@@ -1551,7 +1575,7 @@
                     { icon: "lightbulb", text: "Demonstrated 'in-context learning,' making it a general-purpose text engine." }
                 ],
                 links: [
-                    { text: "Read the paper: 'Language Models are Few-Shot Learners'", url: "https://arxiv.org/abs/2005.14165" }
+                    { text: "Read the paper: 'Language Models are Few-Shot Learners'", url: "httpsa://arxiv.org/abs/2005.14165" }
                 ]
             },
             "dalle2": {
@@ -1564,16 +1588,16 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?astronaut,horse,surreal",
+                    url: "httpsa://source.unsplash.com/1600x900/?astronaut,horse,surreal",
                     alt: "An astronaut riding a horse, surrealism"
                 },
                 impact: [
                     { icon: "image", text: "Generated high-res (1024x1024) images from any text prompt." },
-                    { icon:sh: "cpu", text: "Pioneered 'diffusion models' as the new standard for image generation." },
+                    { icon: "cpu", text: "Pioneered 'diffusion models' as the new standard for image generation." },
                     { icon: "gavel", text: "Ignited global debates on copyright, ethics, and the nature of art." }
                 ],
                 links: [
-                    { text: "DALL-E 2 Explained (OpenAI)", url: "https://openai.com/dall-e-2" }
+                    { text: "DALL-E 2 Explained (OpenAI)", url: "httpsa://openai.com/dall-e-2" }
                 ]
             },
             "chatgpt": {
@@ -1586,17 +1610,17 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?chat,conversation,interface",
+                    url: "httpsa://source.unsplash.com/1600x900/?chat,conversation,interface",
                     alt: "A chat interface on a computer screen"
                 },
                 impact: [
                     { icon: "users", text: "Users: 100 Million+ in 2 months (fastest-growing app in history)." },
-                    { icon: "thumbs-up", text: "Method: RLHF (Reinforcement Learning from Human Feedback) made it "usable"." },
+                    { icon: "thumbs-up", text: "Method: RLHF (Reinforcement Learning from Human Feedback) made it 'usable'." },
                     { icon: "dollar-sign", text: "Triggered a $10B+ investment from Microsoft into OpenAI." },
                     { icon: "globe", text: "Brought Generative AI into the global mainstream consciousness." }
                 ],
                 links: [
-                    { text: "Try ChatGPT", url: "https://chat.openai.com/" }
+                    { text: "Try ChatGPT", url: "httpsa://chat.openai.com/" }
                 ]
             },
             "midjourneyV5": {
@@ -1609,7 +1633,7 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?photorealistic,portrait,hyperrealistic",
+                    url: "httpsa://source.unsplash.com/1600x900/?photorealistic,portrait,hyperrealistic",
                     alt: "A hyperrealistic portrait"
                 },
                 impact: [
@@ -1618,7 +1642,7 @@
                     { icon: "image", text: "Became the dominant tool for artists, designers, and creatives." }
                 ],
                 links: [
-                    { text: "Midjourney V5 Showcase", url: "https://www.midjourney.com/showcase" }
+                    { text: "Midjourney V5 Showcase", url: "httpsa://www.midjourney.com/showcase" }
                 ]
             },
             "gpt4": {
@@ -1631,18 +1655,18 @@
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?multimodal,vision,text,code",
+                    url: "httpsa://source.unsplash.com/1600x900/?multimodal,vision,text,code",
                     alt: "Abstract art showing vision, text, and code"
                 },
-impact: [
+                impact: [
                     { icon: "layers", text: "Parameters: Est. 1.76 Trillion (using a Mixture-of-Experts model)." },
                     { icon: "bar-chart-2", text: "Benchmark: 90th percentile on Uniform Bar Exam (vs. 10th for GPT-3.5)." },
                     { icon: "eye", text: "Multimodal: First major model to accept image inputs for reasoning." },
                     { icon: "book-open", text: "Context Window: 32,000 tokens (up from 4,000), able to read a small book." }
                 ],
                 links: [
-                    { text: "GPT-4 Technical Report", url: "https://arxiv.org/abs/2303.08774" },
-                    { text: "Watch the 'napkin website' demo", url: "https://www.youtube.com/watch?v=J_3we1f9-gI" }
+                    { text: "GPT-4 Technical Report", url: "httpsa://arxiv.org/abs/2303.08774" },
+                    { text: "Watch the 'napkin website' demo", url: "httpsa://www.youtube.com/watch?v=J_3we1f9-gI" }
                 ]
             },
             "claude3": {
@@ -1655,7 +1679,7 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?anthropic,safety,ai,brain",
+                    url: "httpsa://source.unsplash.com/1600x900/?anthropic,safety,ai,brain",
                     alt: "Abstract art related to AI safety"
                 },
                 impact: [
@@ -1665,7 +1689,7 @@ impact: [
                     { icon: "eye", text: "Famously found the 'needle in a haystack' and noted it was being tested." }
                 ],
                 links: [
-                    { text: "Anthropic's Claude 3 announcement", url: "https://www.anthropic.com/news/claude-3-family" }
+                    { text: "Anthropic's Claude 3 announcement", url: "httpsa://www.anthropic.com/news/claude-3-family" }
                 ]
             },
             "deepseekR1": {
@@ -1678,7 +1702,7 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?math,formula,code,logic",
+                    url: "httpsa://source.unsplash.com/1600x900/?math,formula,code,logic",
                     alt: "Mathematical formulas on a blackboard"
                 },
                 impact: [
@@ -1701,7 +1725,7 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "httpsfs://source.unsplash.com/1600x900/?lightning,storm,technology",
+                    url: "httpsa://source.unsplash.com/1600x900/?lightning,storm,technology",
                     alt: "A lightning storm over a city"
                 },
                 impact: [
@@ -1723,7 +1747,7 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "httpsfs://source.unsplash.com/1600x900/?google,data,ecosystem,android",
+                    url: "httpsa://source.unsplash.com/1600x900/?google,data,ecosystem,android",
                     alt: "Google logos and app icons"
                 },
                 impact: [
@@ -1745,13 +1769,13 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?safety,shield,trust,enterprise",
+                    url: "httpsa://source.unsplash.com/1600x900/?safety,shield,trust,enterprise",
                     alt: "A digital shield or lock, symbolizing safety"
                 },
                 impact: [
                     { icon: "check-circle", text: "Claimed 99.9% reduction in hallucinations for enterprise tasks." },
                     { icon: "link", text: "Introduced 'Source of Truth' footnotes for all factual claims." },
-                    { icon: "briefcase", text: "Positioned as the "Enterprise Grade" model, focusing on reliability and safety." }
+                    { icon: "briefcase", text: "Positioned as the 'Enterprise Grade' model, focusing on reliability and safety." }
                 ],
                 links: [
                     { text: "Anthropic Blog: 'Introducing Claude 4: The Reliable AI'", url: "#" }
@@ -1767,7 +1791,7 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?abstract,future,singularity,vortex",
+                    url: "httpsa://source.unsplash.com/1600x900/?abstract,future,singularity,vortex",
                     alt: "Abstract visualization of a futuristic singularity"
                 },
                 impact: [
@@ -1790,7 +1814,7 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?speed,efficiency,server,data center",
+                    url: "httpsa://source.unsplash.com/1600x900/?speed,efficiency,server,data center",
                     alt: "A server room, blurred for motion and speed"
                 },
                 impact: [
@@ -1806,14 +1830,14 @@ impact: [
             "gpt5_1": {
                 year: "Nov 2025",
                 title: "OpenAI's GPT-5.1 & 'o3' System",
-                summary: "OpenAI quickly followed its August release with GPT-5.1, an 'iterative' update that significantly improved the model's personalization and long-term memory. It could now 'remember' user preferences and past conversations, making it a truly personal assistant. More importantly, OpenAI previewed 'o3' (OpenAI Operating System), an agentic framework built *around* GPT-5.1. The demo showed 'o3' proactively managing a user's calendar, filtering emails, and even booking travel *without* being prompted, based on learned goals. This moved the "assistant" from a reactive tool to a proactive, autonomous "agent," sparking widespread excitement and new AGI safety concerns.",
+                summary: "OpenAI quickly followed its August release with GPT-5.1, an 'iterative' update that significantly improved the model's personalization and long-term memory. It could now 'remember' user preferences and past conversations, making it a true personal assistant. More importantly, OpenAI previewed 'o3' (OpenAI Operating System), an agentic framework built *around* GPT-5.1. The demo showed 'o3' proactively managing a user's calendar, filtering emails, and even booking travel *without* being prompted, based on learned goals. This moved the "assistant" from a reactive tool to a proactive, autonomous "agent," sparking widespread excitement and new AGI safety concerns.",
                 quote: {
                     text: "The goal is not just an AI you *talk to*, but an AI that *works for you*. o3 is the first step towards a universal personal agent.",
                     author: "Sam Altman, OpenAI CEO"
                 },
                 media: {
                     type: "image",
-                    url: "https://source.unsplash.com/1600x900/?operating system,ai,interface,personal",
+                    url: "httpsa://source.unsplash.com/1600x900/?operating system,ai,interface,personal",
                     alt: "A futuristic AI operating system interface"
                 },
                 impact: [
@@ -1835,12 +1859,12 @@ impact: [
                 },
                 media: {
                     type: "image",
-                    url: "https-://source.unsplash.com/1600x900/?china,beijing,technology,skyscraper",
+                    url: "httpsa://source.unsplash.com/1600x900/?china,beijing,technology,skyscraper",
                     alt: "A futuristic skyline of a Chinese city like Beijing or Shanghai"
                 },
                 impact: [
                     { icon: "globe", text: "Signaled China's AI parity with top Western models." },
-                    { icon: "bar-chart-2", text: "Exceeded GPT-5 on Chinese-language and cultural benchmarks." },
+                    { icon:A: "bar-chart-2", text: "Exceeded GPT-5 on Chinese-language and cultural benchmarks." },
                     { icon: "video", text: "Demonstrated flawless real-time, lip-synced video translation." },
                     { icon: "link", text: "Showed deep integration with China's unique tech ecosystem (e.g., WeChat, Alibaba)." }
                 ],
@@ -1851,11 +1875,17 @@ impact: [
         };
 
         
-        // 2. MAIN APP LOGIC
+        // 2. MAIN APP LOGIC (REVISED & FIXED)
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- Elements ---
+            // Get the container *before* initializing Lenis
             const container = document.getElementById('timeline-container');
+            if (!container) {
+                console.error("Timeline container not found!");
+                return;
+            }
+            
             const modal = document.getElementById('event-modal');
             const modalCloseBtn = document.getElementById('modal-close-btn');
             const modalContent = {
@@ -1874,30 +1904,15 @@ impact: [
             const allSlides = document.querySelectorAll('.slide');
             const allEventSlides = document.querySelectorAll('.slide[data-event-id]');
 
-            // --- Initialize Lucide Icons ---
-            // This is a bit of a hack to use lucide-react without React
-            // It finds all elements with data-lucide and renders the icon
-            const iconElements = document.querySelectorAll('.lucide');
-            iconElements.forEach(el => {
-                const iconName = el.getAttribute('data-lucide');
-                if (lucide[iconName]) {
-                    const iconNode = React.createElement(lucide[iconName], {
-                        size: el.getAttribute('data-size') || (el.classList.contains('click-prompt') ? 20 : 24),
-                        color: el.getAttribute('data-color') || 'currentColor',
-                        strokeWidth: el.getAttribute('stroke-width') || 2
-                    });
-                    ReactDOM.render(iconNode, el);
-                }
-            });
-
-            // --- 3. Initialize Lenis (Smooth Scroll) ---
+            // --- 3. Initialize Lenis (CRITICAL FIX) ---
             const lenis = new Lenis({
+                wrapper: container, // <-- FIX #1: Tell Lenis to scroll *this* element
+                content: document.querySelector('#timeline-container > section'), // Help Lenis find the content
                 orientation: 'horizontal',
                 gestureOrientation: 'vertical', // Use vertical gestures (mouse wheel) to scroll horizontally
                 smoothWheel: true,
                 wheelMultiplier: 1.0,
-                smoothTouch: true,
-                touchMultiplier: 1.5,
+                smoothTouch: false, // <-- FIX #2: Let native CSS scroll-snapping handle touch
                 infinite: false,
             });
 
@@ -1906,8 +1921,12 @@ impact: [
                 requestAnimationFrame(raf);
             }
             requestAnimationFrame(raf);
+            
+            // --- 4. Initialize Lucide Icons (FIXED) ---
+            // This single call finds all *static* <i data-lucide="..."> tags on the page and replaces them.
+            lucide.createIcons();
 
-            // --- 4. Populate Timeline Rail ---
+            // --- 5. Populate Timeline Rail ---
             function populateTimelineRail() {
                 allSlides.forEach((slide) => {
                     const id = slide.id;
@@ -1923,6 +1942,7 @@ impact: [
                     
                     dot.addEventListener('click', (e) => {
                         e.preventDefault();
+                        // This will now work correctly because Lenis is targeting the right element
                         lenis.scrollTo(dot.hash, {
                             duration: 1.5,
                             easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)) // easeOutExpo
@@ -1933,9 +1953,11 @@ impact: [
             populateTimelineRail();
             const allDots = document.querySelectorAll('.timeline-dot');
 
-            // --- 5. Scroll Progress & Active Dot Logic ---
+            // --- 6. Scroll Progress & Active Dot Logic ---
             let activeSlideId = allSlides[0].id;
             
+            // This observer is a more reliable way to detect the "active" slide
+            // than listening to scroll events, especially with snapping.
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1949,6 +1971,7 @@ impact: [
 
             allSlides.forEach(slide => observer.observe(slide));
             
+            // Lenis's 'scroll' event is used for the progress bar
             lenis.on('scroll', (e) => {
                 // Update progress bar
                 timelineProgress.style.transform = `scaleX(${e.progress})`;
@@ -1959,7 +1982,7 @@ impact: [
                 });
             });
 
-            // --- 6. Modal Logic ---
+            // --- 7. Modal Logic (FIXED) ---
             function populateModal(id) {
                 const data = eventData[id];
                 if (!data) {
@@ -1969,7 +1992,7 @@ impact: [
                 
                 modalContent.year.textContent = data.year;
                 modalContent.title.textContent = data.title;
-                modalContent.summary.innerHTML = data.summary; // Use innerHTML if summary contains <b> etc.
+                modalContent.summary.innerHTML = data.summary;
                 modalContent.quoteText.textContent = data.quote.text;
                 modalContent.quoteAuthor.textContent = `— ${data.quote.author}`;
                 
@@ -1994,40 +2017,34 @@ impact: [
                     modalContent.media.appendChild(iframe);
                 }
                 
-                // Populate impact list
+                // Populate impact list (FIXED: Simple HTML string)
                 data.impact.forEach(item => {
                     const li = document.createElement('li');
-                    
-                    // Create icon
-                    const iconEl = document.createElement('span');
-                    const iconNode = React.createElement(lucide[item.icon], { size: 22, color: 'var(--color-accent)' });
-                    ReactDOM.render(iconNode, iconEl);
-                    
-                    const text = document.createElement('span');
-                    text.textContent = item.text;
-                    
-                    li.appendChild(iconEl);
-                    li.appendChild(text);
+                    // Create the icon using a simple <i> tag that Lucide understands
+                    li.innerHTML = `<i data-lucide="${item.icon}"></i><span>${item.text}</span>`;
                     modalContent.impactList.appendChild(li);
                 });
                 
-                // Populate links
+                // Populate links (FIXED: Simple HTML string)
                 data.links.forEach(item => {
                     const li = document.createElement('li');
                     const a = document.createElement('a');
                     a.href = item.url;
-                    a.textContent = item.text;
-
-                    // Create icon
-                    const iconEl = document.createElement('span');
-                    const iconNode = React.createElement(lucide.link, { size: 16, style: { marginRight: '8px'} });
-                    ReactDOM.render(iconNode, a.prepend(iconEl));
-
                     a.target = '_blank';
                     a.rel = 'noopener noreferrer';
+                    // Prepend the icon HTML
+                    a.innerHTML = `<i data-lucide="link"></i> ${item.text}`;
                     li.appendChild(a);
                     modalContent.linksList.appendChild(li);
                 });
+                
+                // --- CRITICAL ICON FIX ---
+                // After adding the new <i> tags, tell Lucide to render them
+                lucide.createIcons();
+
+                // Show the modal
+                modal.showModal();
+                lenis.stop(); // Stop scroll when modal is open
             }
 
             container.addEventListener('click', (e) => {
@@ -2035,8 +2052,6 @@ impact: [
                 if (card) {
                     const eventId = card.dataset.eventId;
                     populateModal(eventId);
-                    modal.showModal();
-                    lenis.stop(); // Stop scroll when modal is open
                 }
             });
 
@@ -2050,14 +2065,13 @@ impact: [
                 lenis.start(); // Resume scroll when modal is closed
             });
             
-            // Close modal on backdrop click
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.close();
                 }
             });
 
-            // --- 7. Search Filter ---
+            // --- 8. Search Filter ---
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase();
                 
@@ -2071,48 +2085,59 @@ impact: [
                 });
             });
 
-            // --- 8. Keyboard Navigation ---
+            // --- 9. Keyboard Navigation (FIXED) ---
             document.addEventListener('keydown', (e) => {
-                // Don't interfere with search input
+                // Don't interfere with search input or when modal is open
                 if (e.target === searchInput || modal.open) return;
                 
+                const currentSlide = document.getElementById(activeSlideId);
+                if (!currentSlide) return;
+
                 if (e.key === 'ArrowRight') {
                     e.preventDefault();
-                    lenis.scrollTo(`section[data-target-id="${activeSlideId}"] + section`, { duration: 1 });
+                    const nextSlide = currentSlide.nextElementSibling;
+                    if (nextSlide && nextSlide.classList.contains('slide')) {
+                        // This will work because Lenis is set up correctly
+                        lenis.scrollTo(nextSlide, { duration: 1 });
+                    }
                 } else if (e.key === 'ArrowLeft') {
                     e.preventDefault();
-                    lenis.scrollTo(`section[data-target-id="${activeSlideId}"] ~ section`, { duration: 1, offset: -window.innerWidth });
-                    // This is tricky. Let's find the previous slide index instead
-                    const currentSlide = document.getElementById(activeSlideId);
                     const prevSlide = currentSlide.previousElementSibling;
-                    if(prevSlide) {
-                         lenis.scrollTo(prevSlide, { duration: 1 });
+                    if (prevSlide && prevSlide.classList.contains('slide')) {
+                        // This will work because Lenis is set up correctly
+                        lenis.scrollTo(prevSlide, { duration: 1 });
                     }
                 }
             });
 
-            // --- 9. Drag-to-scroll Logic ---
+            // --- 10. Drag-to-scroll Logic (FIXED) ---
             let isDown = false;
             let startX;
             let scrollLeft;
 
             container.addEventListener('mousedown', (e) => {
-                // Don't drag if clicking a link or inside the modal prompt
+                // Don't drag if clicking inside the slide content
                 if (e.target.closest('.slide-content')) return; 
+                
                 isDown = true;
+                lenis.stop(); // <-- FIX: Stop Lenis while dragging
                 container.classList.add('is-dragging');
                 startX = e.pageX - container.offsetLeft;
                 scrollLeft = container.scrollLeft;
             });
 
             container.addEventListener('mouseleave', () => {
+                if (!isDown) return;
                 isDown = false;
                 container.classList.remove('is-dragging');
+                lenis.start(); // <-- FIX: Restart Lenis
             });
 
             container.addEventListener('mouseup', () => {
+                if (!isDown) return;
                 isDown = false;
                 container.classList.remove('is-dragging');
+                lenis.start(); // <-- FIX: Restart Lenis
             });
 
             container.addEventListener('mousemove', (e) => {
@@ -2120,9 +2145,7 @@ impact: [
                 e.preventDefault();
                 const x = e.pageX - container.offsetLeft;
                 const walk = (x - startX) * 2; // *2 for faster drag
-                // Manually setting scrollLeft bypasses Lenis smoothing, which is
-                // the expected behavior for a direct drag. Lenis will
-                // "catch up" on its next 'scroll' event.
+                // Manually set scrollLeft. This is fine because Lenis is stopped.
                 container.scrollLeft = scrollLeft - walk;
             });
 
@@ -2130,4 +2153,3 @@ impact: [
     </script>
 </body>
 </html>
-
