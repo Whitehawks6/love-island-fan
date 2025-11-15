@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" class="lenis lenis-smooth"><head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Story of AI: 1950 – 2025</title>
     <meta name="description" content="An immersive cinematic timeline of Artificial Intelligence, from the Turing Test to the Agentic Era of 2025.">
     <meta property="og:title" content="The Story of AI: 1950 – 2025">
     <meta property="og:description" content="Experience the evolution of intelligence.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&amp;w=1200&amp;auto=format&amp;fit=crop">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1200&auto=format&fit=crop">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&amp;family=Satoshi:wght@300;500;700&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Satoshi:wght@300;500;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -31,13 +32,22 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        /* FIXED: Set up the scrolling container */
+        html {
+            overflow: hidden; /* Prevent vertical scrollbar */
+        }
+
         body {
             background-color: var(--bg);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* We handle horizontal via transform */
-            overflow-y: hidden; /* Hide scrollbar */
+            /* FIXED: Allow horizontal scroll, which Lenis will control */
+            overflow-x: auto;
+            overflow-y: hidden; 
             overscroll-behavior: none;
+            /* Ensure body is full height for scroller */
+            height: 100vh;
+            width: 100vw;
         }
 
         h1, h2, h3, .era-title { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.03em; }
@@ -59,12 +69,13 @@
         }
 
         /* --- Main Container --- */
+        /* .outer-wrapper is not needed if we scroll the body */
         .wrapper {
             display: flex;
             flex-wrap: nowrap;
             height: 100vh;
             width: max-content; /* Will stretch based on content */
-            will-change: transform;
+            will-change: transform; /* Hint for smooth animation */
         }
 
         /* --- Era Sections --- */
@@ -116,6 +127,9 @@
             display: flex;
             gap: 2rem;
             padding-left: 2rem;
+            /* FIXED: Add this for the parallax effect */
+            opacity: 0; 
+            transform: translateX(100px);
         }
 
         .event-card {
@@ -155,7 +169,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 50%;
+            flex-grow: 1; /* FIXED: Make sure it fills remaining space */
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
 
@@ -173,7 +187,7 @@
         .card-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
         .card-summary { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         
-        .card-footer { margin-top: auto; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-main); opacity: 0.7; }
+        .card-footer { margin-top: 1rem; /* FIXED: was auto, which is less predictable */ display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-main); opacity: 0.7; }
         .btn-read { margin-left: auto; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; transition: 0.3s; }
         .event-card:hover .btn-read { background: #fff; color: #000; }
 
@@ -192,6 +206,9 @@
 
         [data-era="agent"] .era-label { color: var(--accent-agent); border-color: var(--accent-agent); }
         [data-era="agent"] .event-card:hover { border-color: var(--accent-agent); box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
+        [data-era="agent"] .era-label.highlight { box-shadow: 0 0 15px rgba(245,158,11,0.4); }
+        [data-era="agent"] .era-title.highlight { text-shadow: 0 0 20px rgba(245,158,11,0.5); }
+        [data-era="agent"] .card-content.highlight { border-top: 2px solid var(--accent-agent); }
 
         /* --- UI Elements --- */
         .nav-rail {
@@ -236,7 +253,7 @@
             transition: 0.3s;
         }
         .search-bar:focus-within { width: 400px; border-color: #fff; }
-        .search-bar input { background: transparent; border: none; color: #fff; outline: none; width: 100%; }
+        .search-bar input { background: transparent; border: none; color: #fff; outline: none; width: 100%; font-family: 'Inter', sans-serif; }
 
         /* --- Modal --- */
         .modal-overlay {
@@ -266,6 +283,7 @@
         .modal-image-container {
             background: #000;
             position: relative;
+            height: 100%;
         }
         .modal-image { width: 100%; height: 100%; object-fit: cover; }
         
@@ -303,19 +321,44 @@
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .wrapper { flex-direction: row; } /* Still horizontal */
-            .era-section { padding: 0 20px; min-width: 100vw; flex-direction: column; justify-content: center; text-align: center; }
+            .wrapper { flex-direction: column; height: auto; width: 100vw; } /* Switch to vertical on mobile */
+            .era-section { padding: 5rem 20px; min-width: 100vw; height: auto; flex-direction: column; justify-content: center; text-align: center; }
             .era-intro { min-width: 100%; padding: 0; margin-bottom: 2rem; }
-            .cards-wrapper { overflow-x: visible; padding-left: 0; justify-content: center; }
-            .event-card { width: 280px; height: 400px; margin-right: 15px; }
+            .cards-wrapper { 
+                overflow-x: auto; /* Allow card swiping */
+                overflow-y: hidden;
+                padding-left: 20px; /* Add padding for swipe start */
+                padding-bottom: 1rem;
+                justify-content: flex-start; 
+                width: 100vw;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+            }
+            .event-card { 
+                width: 280px; 
+                height: 400px; 
+                margin-right: 15px; 
+                scroll-snap-align: center;
+            }
             .modal-content { grid-template-columns: 1fr; height: 90vh; display: flex; flex-direction: column; }
             .modal-image-container { height: 200px; flex-shrink: 0; }
             .modal-details { padding: 1.5rem; }
             .modal-title { font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            
+            /* Hide desktop-only scroll elements on mobile */
+            .nav-rail { display: none; }
+            .search-bar { width: 90vw; }
+            .search-bar:focus-within { width: 90vw; }
+
+            /* Remove desktop-only JS animations */
+            .gsap-enabled .era-intro { opacity: 1; transform: none; }
+            .gsap-enabled .cards-wrapper { opacity: 1; transform: none; }
         }
     </style>
 </head>
-<body style="">
+<body>
 
     <div class="background-fx"></div>
     <div class="noise"></div>
@@ -325,316 +368,72 @@
         <input type="text" id="search-input" placeholder="Search (e.g., 'DeepSeek', 'GPT-5')...">
     </div>
 
-    <div class="outer-wrapper">
-        <div class="wrapper">
-            
-            <section class="era-section" data-era="dream">
-                <div class="era-intro" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;">
-                    <span class="era-label">1950 – 1974</span>
-                    <h2 class="era-title">The Dream</h2>
-                    <p class="era-desc">From Turing's imitation game to the first neural networks. A time of boundless optimism where machines were taught to play checkers and speak simple English.</p>
-                </div>
-                <div class="cards-wrapper" id="era-1-cards" style="translate: none; rotate: none; scale: none; opacity: 0.9421; transform: translate3d(5.7858px, 0px, 0px);">
-                    <article class="event-card" data-index="0" style="opacity: 1; filter: none;">
-                    <div class="card-year">1950</div>
-                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="The Turing Test" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">The Turing Test</h3>
-                            <p class="card-summary">Alan Turing publishes 'Computing Machinery and Intelligence', proposing the 'Imitation Game' to determine if a machine can demonstrate human-like intelligence.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="1" style="opacity: 1; filter: none;">
-                    <div class="card-year">1956</div>
-                    <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Dartmouth Workshop" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">Dartmouth Workshop</h3>
-                            <p class="card-summary">The term 'Artificial Intelligence' is coined. John McCarthy, Marvin Minsky, and others gather for a summer workshop that marks the official birth of AI as a field.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="2" style="opacity: 1; filter: none;">
-                    <div class="card-year">1958</div>
-                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Perceptron" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">Perceptron</h3>
-                            <p class="card-summary">Frank Rosenblatt invents the Perceptron, an electronic device that showed the ability to learn. It was the ancestor of modern neural networks.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="3" style="opacity: 1; filter: none;">
-                    <div class="card-year">1966</div>
-                    <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="ELIZA" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">ELIZA</h3>
-                            <p class="card-summary">Joseph Weizenbaum creates ELIZA, a chatbot mimicking a Rogerian psychotherapist. It demonstrated the illusion of understanding through pattern matching.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article></div>
-            </section>
+    <div class="wrapper">
+        
+        <section class="era-section" data-era="dream">
+            <div class="era-intro">
+                <span class="era-label">1950 – 1974</span>
+                <h2 class="era-title">The Dream</h2>
+                <p class="era-desc">From Turing's imitation game to the first neural networks. A time of boundless optimism where machines were taught to play checkers and speak simple English.</p>
+            </div>
+            <div class="cards-wrapper" id="era-1-cards"></div>
+        </section>
 
-            <section class="era-section" data-era="winters">
-                <div class="era-intro" style="translate: none; rotate: none; scale: none; transform: translate(0px, 20px); opacity: 0;">
-                    <span class="era-label">1974 – 1997</span>
-                    <h2 class="era-title">Winters &amp; Experts</h2>
-                    <p class="era-desc">Funding dried up as promises fell short. The field pivoted to logic-based "Expert Systems" until Deep Blue shocked the world by defeating a chess grandmaster.</p>
-                </div>
-                <div class="cards-wrapper" id="era-2-cards" style="translate: none; rotate: none; scale: none; opacity: 0; transform: translate(100px, 0px);"><article class="event-card" data-index="4" style="opacity: 1; filter: none;">
-                    <div class="card-year">1980</div>
-                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Expert Systems Boom" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">Expert Systems Boom</h3>
-                            <p class="card-summary">XCON (eXpert CONfigurer) saves DEC millions. The industry shifts from general intelligence to specialized 'Expert Systems' that use if-then logic rules.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="5" style="opacity: 1; filter: none;">
-                    <div class="card-year">1986</div>
-                    <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Backpropagation" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">Backpropagation</h3>
-                            <p class="card-summary">Hinton, Rumelhart, and Williams popularize backpropagation, allowing multi-layer neural networks to learn effectively, thawing the AI winter.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="6" style="opacity: 1; filter: none;">
-                    <div class="card-year">1997</div>
-                    <img src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Deep Blue vs. Kasparov" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">Deep Blue vs. Kasparov</h3>
-                            <p class="card-summary">IBM's Deep Blue defeats reigning world chess champion Garry Kasparov. A watershed moment proving machines could out-calculate human intuition in complex games.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article></div>
-            </section>
+        <section class="era-section" data-era="winters">
+            <div class="era-intro">
+                <span class="era-label">1974 – 1997</span>
+                <h2 class="era-title">Winters &amp; Experts</h2>
+                <p class="era-desc">Funding dried up as promises fell short. The field pivoted to logic-based "Expert Systems" until Deep Blue shocked the world by defeating a chess grandmaster.</p>
+            </div>
+            <div class="cards-wrapper" id="era-2-cards"></div>
+        </section>
 
-            <section class="era-section" data-era="deep">
-                <div class="era-intro" style="translate: none; rotate: none; scale: none; transform: translate(0px, 20px); opacity: 0;">
-                    <span class="era-label">1997 – 2020</span>
-                    <h2 class="era-title">Deep Learning</h2>
-                    <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
-                </div>
-                <div class="cards-wrapper" id="era-3-cards" style="translate: none; rotate: none; scale: none; opacity: 0; transform: translate(100px, 0px);"><article class="event-card" data-index="7" style="opacity: 1; filter: none;">
-                    <div class="card-year">2012</div>
-                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="AlexNet / ImageNet" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">AlexNet / ImageNet</h3>
-                            <p class="card-summary">A deep convolutional neural network (AlexNet) crushes the competition at the ImageNet challenge, reducing error rates by half and igniting the modern Deep Learning explosion.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="8" style="opacity: 1; filter: none;">
-                    <div class="card-year">2016</div>
-                    <img src="https://images.unsplash.com/photo-1580894894513-541e068a3e2b?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="AlphaGo" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">AlphaGo</h3>
-                            <p class="card-summary">Google DeepMind's AlphaGo defeats Lee Sedol in Go, a game with more board configurations than atoms in the universe, using reinforcement learning.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="9" style="opacity: 1; filter: none;">
-                    <div class="card-year">2017</div>
-                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Attention Is All You Need" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">Attention Is All You Need</h3>
-                            <p class="card-summary">Google researchers introduce the Transformer architecture. This parallelization mechanism forms the backbone of all modern LLMs (GPT, Claude, Gemini).</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article></div>
-            </section>
+        <section class="era-section" data-era="deep">
+            <div class="era-intro">
+                <span class="era-label">1997 – 2020</span>
+                <h2 class="era-title">Deep Learning</h2>
+                <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
+            </div>
+            <div class="cards-wrapper" id="era-3-cards"></div>
+        </section>
 
-            <section class="era-section" data-era="gen">
-                <div class="era-intro" style="translate: none; rotate: none; scale: none; transform: translate(0px, 20px); opacity: 0;">
-                    <span class="era-label">2020 – 2024</span>
-                    <h2 class="era-title">Generative Explosion</h2>
-                    <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
-                </div>
-                <div class="cards-wrapper" id="era-4-cards" style="translate: none; rotate: none; scale: none; opacity: 0; transform: translate(100px, 0px);"><article class="event-card" data-index="10" style="opacity: 1; filter: none;">
-                    <div class="card-year">2020</div>
-                    <img src="https://images.unsplash.com/photo-1655720031554-a929595ffad7?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="GPT-3 Release" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">GPT-3 Release</h3>
-                            <p class="card-summary">OpenAI releases GPT-3. With 175 billion parameters, it demonstrates few-shot learning, writing code, poetry, and prose with uncanny coherence.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="11" style="opacity: 1; filter: none;">
-                    <div class="card-year">2022</div>
-                    <img src="https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="ChatGPT" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">ChatGPT</h3>
-                            <p class="card-summary">OpenAI launches ChatGPT (GPT-3.5). It becomes the fastest-growing consumer app in history, reaching 100 million users in two months.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="12" style="opacity: 1; filter: none;">
-                    <div class="card-year">2024</div>
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Sora &amp; Multimodality" loading="lazy">
-                    <div class="card-content" style="">
-                        <div>
-                            <h3 class="card-title">Sora &amp; Multimodality</h3>
-                            <p class="card-summary">AI masters video physics. Sora generates minute-long realistic video from text. GPT-4o and Gemini 1.5 Pro handle audio, vision, and text in real-time.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article></div>
-            </section>
+        <section class="era-section" data-era="gen">
+            <div class="era-intro">
+                <span class="era-label">2020 – 2024</span>
+                <h2 class="era-title">Generative Explosion</h2>
+                <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
+            </div>
+            <div class="cards-wrapper" id="era-4-cards"></div>
+        </section>
 
-             <section class="era-section" data-era="agent">
-                <div class="era-intro" style="translate: none; rotate: none; scale: none; transform: translate(0px, 20px); opacity: 0;">
-                    <span class="era-label" style="border-color: var(--accent-agent); color: var(--accent-agent); box-shadow: 0 0 15px rgba(245,158,11,0.4);">2025</span>
-                    <h2 class="era-title" style="text-shadow: 0 0 20px rgba(245,158,11,0.5);">Reasoning &amp; Agents</h2>
-                    <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
-                </div>
-                <div class="cards-wrapper" id="era-5-cards" style="translate: none; rotate: none; scale: none; opacity: 0; transform: translate(100px, 0px);"><article class="event-card" data-index="13" style="opacity: 1; filter: none;">
-                    <div class="card-year">Jan 2025</div>
-                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="DeepSeek-R1" loading="lazy">
-                    <div class="card-content" style="border-top: 2px solid var(--accent-agent)">
-                        <div>
-                            <h3 class="card-title">DeepSeek-R1</h3>
-                            <p class="card-summary">DeepSeek shocks the industry by releasing R1, an open-source reasoning model that rivals proprietary giants at a fraction of the training cost. It introduces 'Chain of Thought' verification at scale.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="14" style="opacity: 1; filter: none;">
-                    <div class="card-year">Feb 2025</div>
-                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Grok-3 &amp; Claude 3.7" loading="lazy">
-                    <div class="card-content" style="border-top: 2px solid var(--accent-agent)">
-                        <div>
-                            <h3 class="card-title">Grok-3 &amp; Claude 3.7</h3>
-                            <p class="card-summary">A massive month. xAI's Grok-3 leverages real-time data from X to predict trends. Simultaneously, Anthropic releases Claude 3.7 Sonnet with significantly reduced hallucination rates.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="15" style="opacity: 1; filter: none;">
-                    <div class="card-year">Mar 2025</div>
-                    <img src="https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Gemini 2.5 Pro" loading="lazy">
-                    <div class="card-content" style="border-top: 2px solid var(--accent-agent)">
-                        <div>
-                            <h3 class="card-title">Gemini 2.5 Pro</h3>
-                            <p class="card-summary">Google strikes back with Gemini 2.5. It integrates deeply into the Android OS, allowing for 'Agentic Action'—booking flights and replying to emails autonomously.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="16" style="opacity: 1; filter: none;">
-                    <div class="card-year">May 2025</div>
-                    <img src="https://images.unsplash.com/photo-1535378437268-139939775e91?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Claude 4 Opus" loading="lazy">
-                    <div class="card-content" style="border-top: 2px solid var(--accent-agent)">
-                        <div>
-                            <h3 class="card-title">Claude 4 Opus</h3>
-                            <p class="card-summary">Anthropic releases the behemoth: Claude 4 Opus. It achieves near-perfect scores on graduate-level reasoning and exhibits subtle nuance in creative writing previously thought impossible.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="17" style="opacity: 1; filter: none;">
-                    <div class="card-year">Aug 2025</div>
-                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="GPT-5 &amp; MAI-1" loading="lazy">
-                    <div class="card-content" style="border-top: 2px solid var(--accent-agent)">
-                        <div>
-                            <h3 class="card-title">GPT-5 &amp; MAI-1</h3>
-                            <p class="card-summary">OpenAI releases the long-awaited GPT-5, featuring 'System 2' thinking (slow, deliberate reasoning). Microsoft simultaneously launches MAI-1 to power enterprise reasoning clusters.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="18" style="opacity: 1; filter: none;">
-                    <div class="card-year">Sep 2025</div>
-                    <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="Claude Sonnet 4.5" loading="lazy">
-                    <div class="card-content" style="border-top: 2px solid var(--accent-agent)">
-                        <div>
-                            <h3 class="card-title">Claude Sonnet 4.5</h3>
-                            <p class="card-summary">Anthropic optimizes the Opus architecture into Sonnet 4.5—delivering GPT-5 class performance at 1/10th the cost and speed, democratizing high-level reasoning for developers.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article><article class="event-card" data-index="19" style="opacity: 1; filter: none;">
-                    <div class="card-year">Nov 2025</div>
-                    <img src="https://images.unsplash.com/photo-1484589065579-248aad0d8b13?q=80&amp;w=800&amp;auto=format&amp;fit=crop" class="card-media" alt="The Agentic Era" loading="lazy">
-                    <div class="card-content" style="border-top: 2px solid var(--accent-agent)">
-                        <div>
-                            <h3 class="card-title">The Agentic Era</h3>
-                            <p class="card-summary">OpenAI releases GPT-5.1 (o3 System) alongside Baidu's ERNIE 5.0. The focus shifts entirely from 'Chatbots' to 'Agents' that can execute complex, multi-step workflows autonomously over days.</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> Read more
-                        </div>
-                    </div>
-                </article></div>
-            </section>
+         <section class="era-section" data-era="agent">
+            <div class="era-intro">
+                <span class="era-label highlight">2025</span>
+                <h2 class="era-title highlight">Reasoning &amp; Agents</h2>
+                <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
+            </div>
+            <div class="cards-wrapper" id="era-5-cards"></div>
+        </section>
 
-            <div style="width: 10vw;"></div>
-        </div>
+        <div style="width: 10vw; flex-shrink: 0;"></div>
     </div>
 
-    <nav class="nav-rail" id="nav-rail">
-        <div class="nav-dot active" title="The Dream"></div><div class="nav-dot" title="Winters &amp; Experts"></div><div class="nav-dot" title="Deep Learning"></div><div class="nav-dot" title="Generative Explosion"></div><div class="nav-dot" title="Reasoning &amp; Agents"></div></nav>
+    <nav class="nav-rail" id="nav-rail"></nav>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
+    <div class="modal-overlay" id="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-image-container">
-                <img src="https://images.unsplash.com/photo-1484589065579-248aad0d8b13?q=80&amp;w=800&amp;auto=format&amp;fit=crop" alt="" class="modal-image" id="m-img">
+                <img src="" alt="" class="modal-image" id="m-img">
             </div>
             <div class="modal-details">
-                <span class="modal-year" id="m-year">Nov 2025</span>
-                <h2 class="modal-title" id="m-title">The Agentic Era</h2>
-                <p id="m-desc" style="line-height: 1.8; color: #ccc;">OpenAI releases GPT-5.1 (o3 System) alongside Baidu's ERNIE 5.0. The focus shifts entirely from 'Chatbots' to 'Agents' that can execute complex, multi-step workflows autonomously over days.</p>
-                <div class="modal-quote" id="m-quote">"Don't just chat. Do."</div>
+                <span class="modal-year" id="m-year"></span>
+                <h2 class="modal-title" id="m-title"></h2>
+                <p id="m-desc" style="line-height: 1.8; color: #ccc;"></p>
+                <div class="modal-quote" id="m-quote"></div>
                 
                 <h4 style="margin-top: 2rem; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #fff;">Impact at a Glance</h4>
-                <div class="stats-grid" id="m-stats"><div class="stat-item"><i class="fa-solid fa-bolt"></i> <span class="stat-text">Autonomy: Level 3</span></div><div class="stat-item"><i class="fa-solid fa-bolt"></i> <span class="stat-text">Planning: Multi-day horizon</span></div><div class="stat-item"><i class="fa-solid fa-bolt"></i> <span class="stat-text">Global Impact: Workforce Redefinition</span></div></div>
+                <div class="stats-grid" id="m-stats"></div>
 
                 <a href="#" id="m-link" target="_blank" style="display: inline-block; margin-top: 2rem; color: var(--accent-agent); text-decoration: none; border-bottom: 1px solid currentColor;">View Source / Paper →</a>
             </div>
@@ -730,7 +529,6 @@
         ];
 
         // --- 2. INITIALIZATION & RENDERING ---
-        const wrapper = document.querySelector('.wrapper');
         const navRail = document.getElementById('nav-rail');
 
         function renderCards() {
@@ -743,16 +541,16 @@
                 card.setAttribute('data-index', index);
                 card.onclick = () => openModal(index);
 
-                // Add specialized coloring for Era 5 specific events
                 let borderStyle = "";
+                let contentClass = "card-content";
                 if(evt.era === 5) {
-                    borderStyle = "border-top: 2px solid var(--accent-agent)";
+                    contentClass += " highlight"; // Adds .highlight class for CSS hook
                 }
 
                 card.innerHTML = `
                     <div class="card-year">${evt.year}</div>
                     <img src="${evt.img}" class="card-media" alt="${evt.title}" loading="lazy">
-                    <div class="card-content" style="${borderStyle}">
+                    <div class="${contentClass}">
                         <div>
                             <h3 class="card-title">${evt.title}</h3>
                             <p class="card-summary">${evt.desc}</p>
@@ -773,13 +571,18 @@
                 dot.className = 'nav-dot';
                 dot.title = section.querySelector('.era-title').innerText;
                 dot.onclick = () => {
-                    // Scroll to that section using GSAP
-                    // We need to calculate the horizontal offset
                     const offset = section.offsetLeft;
-                    lenis.scrollTo(offset, { lock: true, duration: 1.5 });
+                    // Use GSAP's ScrollToPlugin for smooth animated scroll
+                    gsap.to(window, { 
+                        scrollTo: { x: offset, autoKill: false }, 
+                        duration: 1.5, 
+                        ease: "power2.inOut"
+                    });
                 };
                 navRail.appendChild(dot);
             });
+            // Set first dot active
+            navRail.children[0].classList.add('active');
         }
 
         renderCards();
@@ -788,23 +591,25 @@
         // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
         
         // Initialize Lenis for momentum scrolling
+        // FIXED: Tell Lenis to scroll horizontally, and map vertical wheel to horizontal scroll
         const lenis = new Lenis({
-            orientation: 'horizontal', // Native horizontal scrolling
-            gestureOrientation: 'both',
-            smooth: true,
-            mouseMultiplier: 1,
-            touchMultiplier: 2,
+            orientation: 'horizontal',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            mouseMultiplier: 1.0,
+            smoothTouch: true, // Enable for mobile drag
+            touchMultiplier: 1.5,
         });
 
-        // The user wants "Mouse Wheel scrolls horizontally"
-        // We listen to vertical wheel and translate it to lenis horizontal scroll
-        window.addEventListener("wheel", (e) => {
-            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-                e.preventDefault();
-                lenis.scrollTo(lenis.scroll + e.deltaY);
-            }
-        }, { passive: false });
+        // FIXED: This is the magic code that connects Lenis to GSAP's animation ticker
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => {
+          lenis.raf(time * 1000); // Lenis uses milliseconds
+        });
+        gsap.ticker.lagSmoothing(0);
 
+
+        // This function runs the animation loop for Lenis
         function raf(time) {
             lenis.raf(time);
             requestAnimationFrame(raf);
@@ -814,48 +619,47 @@
         // --- 4. ANIMATIONS & PARALLAX ---
         
         // Register GSAP Plugin
-        gsap.registerPlugin(ScrollTrigger);
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+        
+        // Add a class to body when GSAP is enabled (for mobile fallback)
+        document.body.classList.add('gsap-enabled');
 
         // Animate sections entering
         const sections = document.querySelectorAll('.era-section');
-        sections.forEach((section) => {
+        sections.forEach((section, i) => {
             const text = section.querySelector('.era-intro');
             const cards = section.querySelector('.cards-wrapper');
             
+            // Animate the intro text
             gsap.to(text, {
                 scrollTrigger: {
                     trigger: section,
-                    horizontal: true, // Important for horizontal scroll
-                    start: "left center",
-                    end: "right center",
-                    toggleActions: "play reverse play reverse",
-                    scroller: window // Using native window scroll via Lenis
+                    horizontal: true, // IMPORTANT
+                    start: "left 80%", // Start when 80% of the section is visible
+                    end: "left 40%",
+                    scrub: 1,
+                    // markers: true, // Uncomment to debug
                 },
                 opacity: 1,
                 y: 0,
-                duration: 1,
                 ease: "power3.out"
             });
 
-            // Parallax for cards
-            gsap.fromTo(cards, 
-                { x: 100, opacity: 0 },
-                {
-                    scrollTrigger: {
-                        trigger: section,
-                        horizontal: true,
-                        start: "left 80%",
-                        end: "center center",
-                        scrub: 1
-                    },
-                    x: 0,
-                    opacity: 1
-                }
-            );
-        });
-
-        // Update Nav Dots on scroll
-        sections.forEach((section, i) => {
+            // Parallax and fade for cards
+            gsap.to(cards, {
+                scrollTrigger: {
+                    trigger: section,
+                    horizontal: true,
+                    start: "left 90%", // Start a bit later than text
+                    end: "center 50%",
+                    scrub: 1,
+                },
+                x: 0,
+                opacity: 1,
+                ease: "power3.out"
+            });
+            
+            // Update Nav Dots on scroll
             ScrollTrigger.create({
                 trigger: section,
                 horizontal: true,
@@ -873,27 +677,39 @@
 
         // --- 5. MODAL LOGIC ---
         const modal = document.getElementById('modal');
-        
+        const modalYear = document.getElementById('m-year');
+        const modalTitle = document.getElementById('m-title');
+        const modalImg = document.getElementById('m-img');
+        const modalDesc = document.getElementById('m-desc');
+        const modalQuote = document.getElementById('m-quote');
+        const modalLink = document.getElementById('m-link');
+        const modalStats = document.getElementById('m-stats');
+
         function openModal(index) {
             const data = events[index];
             
             // Populate Data
-            document.getElementById('m-img').src = data.img;
-            document.getElementById('m-year').innerText = data.year;
-            document.getElementById('m-title').innerText = data.title;
-            document.getElementById('m-desc').innerText = data.desc;
-            document.getElementById('m-quote').innerText = `"${data.quote}"`;
-            document.getElementById('m-link').href = data.link;
+            modalImg.src = data.img;
+            modalYear.innerText = data.year;
+            modalTitle.innerText = data.title;
+            modalDesc.innerText = data.desc;
+            modalQuote.innerText = `"${data.quote}"`;
+            modalLink.href = data.link;
 
             // Populate Stats
-            const statsContainer = document.getElementById('m-stats');
-            statsContainer.innerHTML = '';
+            modalStats.innerHTML = '';
             data.stats.forEach(stat => {
                 const div = document.createElement('div');
                 div.className = 'stat-item';
                 div.innerHTML = `<i class="fa-solid fa-bolt"></i> <span class="stat-text">${stat}</span>`;
-                statsContainer.appendChild(div);
+                modalStats.appendChild(div);
             });
+            
+            // Set accent colors
+            const era = `var(--accent-${document.querySelector(`[data-index="${index}"]`).closest('.era-section').dataset.era})`;
+            modalYear.style.color = era;
+            modalQuote.style.borderColor = era;
+            modalLink.style.color = era;
 
             // Show
             modal.classList.add('active');
@@ -905,7 +721,7 @@
             lenis.start(); // Resume scrolling
         }
 
-        // Search Logic
+        // --- 6. SEARCH LOGIC ---
         const searchInput = document.getElementById('search-input');
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
@@ -913,7 +729,9 @@
             
             cards.forEach((card, index) => {
                 const data = events[index];
-                const match = data.title.toLowerCase().includes(term) || data.year.toLowerCase().includes(term);
+                const match = data.title.toLowerCase().includes(term) || 
+                              data.year.toLowerCase().includes(term) ||
+                              data.desc.toLowerCase().includes(term);
                 
                 if (term === "") {
                     card.style.opacity = "1";
@@ -928,16 +746,24 @@
             });
         });
 
-        // Keyboard Nav
+        // --- 7. KEYBOARD NAV ---
         window.addEventListener('keydown', (e) => {
-            if(e.key === 'ArrowRight') lenis.scrollTo(lenis.scroll + 500);
-            if(e.key === 'ArrowLeft') lenis.scrollTo(lenis.scroll - 500);
-            if(e.key === 'Escape') closeModal();
+            // Don't scroll if user is typing in search
+            if (e.target === searchInput) return;
+
+            if (e.key === 'ArrowRight') {
+                // Use programmatic scroll for a fixed jump
+                lenis.scroll += 500;
+            }
+            if (e.key === 'ArrowLeft') {
+                lenis.scroll -= 500;
+            }
+            if (e.key === 'Escape') {
+                closeModal();
+            }
         });
 
     </script>
     
-    
-
 </body>
 </html>
