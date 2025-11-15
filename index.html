@@ -3,167 +3,701 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="An immersive interactive timeline exploring the history of Artificial Intelligence from the 1950s to 2025.">
-    <title>Immersive AI History Timeline</title>
-    <!-- Dependencies as comments -->
-    <!-- HTML5, CSS3, JavaScript -->
-    <!-- Vis.js for horizontal timeline: Chosen for its interactive horizontal layout, drag/zoom support, grouping, and custom HTML content. CDN: https://unpkg.com/vis-timeline@latest -->
-    <!-- Font Awesome for icons: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css -->
-    <!-- Google Fonts: Roboto -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" />
-    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <title>The Story of AI: 1950 – 2025</title>
+    <meta name="description" content="An immersive cinematic timeline of Artificial Intelligence, from the Turing Test to the Agentic Era of 2025.">
+    <meta property="og:title" content="The Story of AI: 1950 – 2025">
+    <meta property="og:description" content="Experience the evolution of intelligence.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1200&auto=format&fit=crop">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Satoshi:wght@300;500;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        body { font-family: 'Roboto', sans-serif; background: linear-gradient(to right, #f0f0f0, #a0c4ff); color: #333; margin: 0; padding: 20px; }
-        h1 { text-align: center; color: #1a73e8; }
-        #timeline { border: 1px solid #ddd; height: 600px; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .vis-item { cursor: pointer; }
-        .vis-item .vis-item-content { padding: 10px; background: #e3f2fd; border-radius: 5px; }
-        #intro, #conclusion { max-width: 800px; margin: 20px auto; text-align: justify; }
-        #search { text-align: center; margin: 10px; }
-        #search input { padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 5px; }
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 10px; animation: fadeIn 0.3s; }
-        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
-        .close:hover { color: black; text-decoration: none; cursor: pointer; }
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-        /* Accessibility: High contrast, focus styles */
-        :focus { outline: 2px solid #1a73e8; }
-        img { max-width: 100%; height: auto; }
-        a { color: #1a73e8; text-decoration: none; }
-        /* Responsive */
-        @media (max-width: 768px) { #timeline { height: 400px; } }
+        :root {
+            --bg: #050507;
+            --text-main: #e0e0e0;
+            --text-muted: #9ca3af;
+            --accent-dream: #d4b483; /* Sepia for 1950s */
+            --accent-winter: #60a5fa; /* Ice Blue for Winters */
+            --accent-deep: #34d399; /* Matrix Green for Deep Learning */
+            --accent-gen: #a855f7; /* Neon Purple for Generative */
+            --accent-agent: #f59e0b; /* Gold/Solar for 2025 */
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* We handle horizontal via transform */
+            overflow-y: hidden; /* Hide scrollbar */
+            overscroll-behavior: none;
+        }
+
+        h1, h2, h3, .era-title { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.03em; }
+
+        /* --- Background FX --- */
+        .background-fx {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(20,20,30,1) 0%, var(--bg) 80%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; z-index: -1; pointer-events: none;
+        }
+
+        /* --- Main Container --- */
+        .wrapper {
+            display: flex;
+            flex-wrap: nowrap;
+            height: 100vh;
+            width: max-content; /* Will stretch based on content */
+            will-change: transform;
+        }
+
+        /* --- Era Sections --- */
+        .era-section {
+            display: flex;
+            align-items: center;
+            height: 100vh;
+            padding: 0 5vw;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .era-intro {
+            min-width: 40vw;
+            max-width: 50vw;
+            padding-right: 4rem;
+            opacity: 0; /* Animate in */
+            transform: translateY(20px);
+        }
+
+        .era-label {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border: 1px solid currentColor;
+            border-radius: 20px;
+        }
+
+        .era-title {
+            font-size: 4rem;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #ffffff80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .era-desc {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* --- Cards --- */
+        .cards-wrapper {
+            display: flex;
+            gap: 2rem;
+            padding-left: 2rem;
+        }
+
+        .event-card {
+            width: 350px;
+            height: 60vh;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--ease-out);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-media {
+            height: 50%;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+            filter: grayscale(0.6);
+        }
+        
+        .event-card:hover .card-media { transform: scale(1.1); filter: grayscale(0); }
+
+        .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+
+        .card-year {
+            font-family: 'Space Grotesk';
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: rgba(255,255,255,0.1);
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2;
+        }
+
+        .card-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .card-summary { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .card-footer { margin-top: auto; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-main); opacity: 0.7; }
+        .btn-read { margin-left: auto; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; transition: 0.3s; }
+        .event-card:hover .btn-read { background: #fff; color: #000; }
+
+        /* --- Era Specific Colors --- */
+        [data-era="dream"] .era-label { color: var(--accent-dream); border-color: var(--accent-dream); }
+        [data-era="dream"] .event-card:hover { border-color: var(--accent-dream); }
+        
+        [data-era="winters"] .era-label { color: var(--accent-winter); border-color: var(--accent-winter); }
+        [data-era="winters"] .event-card:hover { border-color: var(--accent-winter); }
+
+        [data-era="deep"] .era-label { color: var(--accent-deep); border-color: var(--accent-deep); }
+        [data-era="deep"] .event-card:hover { border-color: var(--accent-deep); }
+
+        [data-era="gen"] .era-label { color: var(--accent-gen); border-color: var(--accent-gen); }
+        [data-era="gen"] .event-card:hover { border-color: var(--accent-gen); }
+
+        [data-era="agent"] .era-label { color: var(--accent-agent); border-color: var(--accent-agent); }
+        [data-era="agent"] .event-card:hover { border-color: var(--accent-agent); box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
+
+        /* --- UI Elements --- */
+        .nav-rail {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+            padding-bottom: 10px;
+        }
+
+        .nav-dot {
+            width: 8px; height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-dot.active { background: #fff; transform: scale(1.5); box-shadow: 0 0 10px #fff; }
+        .nav-dot:hover { background: rgba(255,255,255,0.6); }
+
+        .search-bar {
+            position: fixed;
+            top: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(10,10,10,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: #fff;
+            width: 300px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .search-bar:focus-within { width: 400px; border-color: #fff; }
+        .search-bar input { background: transparent; border: none; color: #fff; outline: none; width: 100%; }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(15px);
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal-content {
+            width: 90%; max-width: 1000px; height: 85vh;
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            overflow: hidden;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-image-container {
+            background: #000;
+            position: relative;
+        }
+        .modal-image { width: 100%; height: 100%; object-fit: cover; }
+        
+        .modal-details {
+            padding: 3rem;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: rgba(255,255,255,0.1); border: none; color: #fff;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: grid; place-items: center; transition: 0.2s;
+            z-index: 10;
+        }
+        .close-modal:hover { background: #fff; color: #000; }
+
+        /* Modal Typography */
+        .modal-year { color: var(--accent-deep); font-weight: 700; margin-bottom: 0.5rem; display: block;}
+        .modal-title { font-size: 2.5rem; font-family: 'Space Grotesk'; margin-bottom: 1.5rem; line-height: 1.1; }
+        .modal-quote {
+            border-left: 3px solid var(--accent-agent);
+            padding-left: 1.5rem;
+            font-style: italic;
+            color: #ddd;
+            margin: 2rem 0;
+            font-size: 1.1rem;
+        }
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+            margin-top: 2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 8px;
+        }
+        .stat-item i { color: var(--text-muted); margin-right: 8px; }
+        .stat-text { font-size: 0.9rem; }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .wrapper { flex-direction: row; } /* Still horizontal */
+            .era-section { padding: 0 20px; min-width: 100vw; flex-direction: column; justify-content: center; text-align: center; }
+            .era-intro { min-width: 100%; padding: 0; margin-bottom: 2rem; }
+            .cards-wrapper { overflow-x: visible; padding-left: 0; justify-content: center; }
+            .event-card { width: 280px; height: 400px; margin-right: 15px; }
+            .modal-content { grid-template-columns: 1fr; height: 90vh; display: flex; flex-direction: column; }
+            .modal-image-container { height: 200px; flex-shrink: 0; }
+            .modal-details { padding: 1.5rem; }
+            .modal-title { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
-    <h1>Immersive AI History Timeline</h1>
-    <div id="intro">
-        <p>Artificial Intelligence has evolved from theoretical ideas in the 1950s to transformative technology today, with each breakthrough building on the last to bring us closer to machines that think, create, and assist like humans. This timeline tells a cohesive story of AI's journey, grouped into thematic eras that highlight its progression from foundational concepts to everyday integration.</p>
+
+    <div class="background-fx"></div>
+    <div class="noise"></div>
+
+    <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="Search (e.g., 'DeepSeek', 'GPT-5')...">
     </div>
-    <div id="search">
-        <input type="text" id="searchInput" placeholder="Search events..." aria-label="Search timeline events">
-    </div>
-    <div id="timeline" role="region" aria-label="AI History Timeline"></div>
-    <div id="conclusion">
-        <p>As AI continues to advance, its future holds immense potential for solving global challenges, but also risks that necessitate careful ethical considerations and governance, tying back to current debates on responsible development.</p>
-    </div>
-    <!-- Modal for event details -->
-    <div id="eventModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="modal-content">
-            <span class="close" aria-label="Close modal">&times;</span>
-            <h2 id="modalTitle"></h2>
-            <img id="modalImage" alt="" style="display: none;">
-            <p id="modalSummary"></p>
-            <p id="modalSources"></p>
+
+    <div class="outer-wrapper">
+        <div class="wrapper">
+            
+            <section class="era-section" data-era="dream">
+                <div class="era-intro">
+                    <span class="era-label">1950 – 1974</span>
+                    <h2 class="era-title">The Dream</h2>
+                    <p class="era-desc">From Turing's imitation game to the first neural networks. A time of boundless optimism where machines were taught to play checkers and speak simple English.</p>
+                </div>
+                <div class="cards-wrapper" id="era-1-cards">
+                    </div>
+            </section>
+
+            <section class="era-section" data-era="winters">
+                <div class="era-intro">
+                    <span class="era-label">1974 – 1997</span>
+                    <h2 class="era-title">Winters & Experts</h2>
+                    <p class="era-desc">Funding dried up as promises fell short. The field pivoted to logic-based "Expert Systems" until Deep Blue shocked the world by defeating a chess grandmaster.</p>
+                </div>
+                <div class="cards-wrapper" id="era-2-cards"></div>
+            </section>
+
+            <section class="era-section" data-era="deep">
+                <div class="era-intro">
+                    <span class="era-label">1997 – 2020</span>
+                    <h2 class="era-title">Deep Learning</h2>
+                    <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
+                </div>
+                <div class="cards-wrapper" id="era-3-cards"></div>
+            </section>
+
+            <section class="era-section" data-era="gen">
+                <div class="era-intro">
+                    <span class="era-label">2020 – 2024</span>
+                    <h2 class="era-title">Generative Explosion</h2>
+                    <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
+                </div>
+                <div class="cards-wrapper" id="era-4-cards"></div>
+            </section>
+
+             <section class="era-section" data-era="agent">
+                <div class="era-intro">
+                    <span class="era-label" style="border-color: var(--accent-agent); color: var(--accent-agent); box-shadow: 0 0 15px rgba(245,158,11,0.4);">2025</span>
+                    <h2 class="era-title" style="text-shadow: 0 0 20px rgba(245,158,11,0.5);">Reasoning & Agents</h2>
+                    <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
+                </div>
+                <div class="cards-wrapper" id="era-5-cards"></div>
+            </section>
+
+            <div style="width: 10vw;"></div>
         </div>
     </div>
-   <script>
-    // Groups (eras)
-    var groups = new vis.DataSet([
-        {id: 1, content: 'Early Foundations (1950-1970)<br><small>The seeds of AI were planted in the mid-20th century, when visionary thinkers began exploring if machines could mimic human intelligence. This era laid the theoretical and practical foundations, from philosophical questions to early programs and robots.</small>'},
-        {id: 2, content: 'AI Winters and Resurgence (1970-2000)<br><small>After initial excitement, AI faced setbacks with funding cuts during \'winters,\' but breakthroughs in specific applications and computing power sparked a resurgence, proving AI\'s potential in games and vehicles.</small>'},
-        {id: 3, content: 'Deep Learning Boom (2000-2020)<br><small>With advances in data, hardware, and algorithms, deep learning exploded, enabling AI to master complex tasks like image recognition and games, transforming from niche research to powerful technology.</small>'},
-        {id: 4, content: 'Generative AI Era (2020-2025)<br><small>The 2020s saw AI become generative and multimodal, creating content and integrating into daily life, while raising ethical concerns and leading to regulations and rapid advancements.</small>'}
-    ]);
 
-    // Items (events) - Dates approximated to month/day where not specified, for timeline plotting
-    var items = new vis.DataSet([
-        {id: 1, group: 1, start: '1950-01-01', content: '<i class="fas fa-book"></i> Alan Turing Publishes "Computing Machinery and Intelligence"', title: 'This event sparked philosophical debates on machine intelligence.', summary: 'Alan Turing, a pioneering mathematician, wrote a paper proposing a test (now called the Turing Test) where a machine could be considered intelligent if it could converse indistinguishably from a human. In simple terms, this was like asking if a computer could fool someone into thinking it\'s a person during a chat. This event is crucial because it sparked philosophical and practical discussions about machine intelligence, laying the groundwork for evaluating AI systems and inspiring the entire field. "Can machines think?" Turing famously asked, challenging future researchers.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>', image: 'https://source.unsplash.com/random/300x200/?turing' },
-        {id: 2, group: 1, start: '1956-07-01', content: '<i class="fas fa-users"></i> Dartmouth Conference Coins "Artificial Intelligence"', title: 'This marked the formal birth of AI as a discipline.', summary: 'A group of researchers, led by John McCarthy, gathered at Dartmouth College for a workshop to explore how machines could simulate human intelligence, officially naming the field "artificial intelligence." Think of it as the first big brainstorming session where experts dreamed up computers that could think, learn, and solve problems like people. This marked the formal birth of AI as a discipline, uniting scientists and setting ambitious goals that drove decades of research and funding. Building on Turing\'s ideas, it connected theoretical questions to practical pursuits.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?conference' },
-        {id: 3, group: 1, start: '1958-01-01', content: '<i class="fas fa-code"></i> Invention of Lisp Programming Language', title: 'Lisp became the go-to language for AI development.', summary: 'John McCarthy created Lisp, a programming language designed for symbolic computation and list processing, making it ideal for AI experiments. In everyday language, it\'s like a flexible toolkit that lets programmers easily manipulate ideas and data as if handling words or lists. Lisp became the go-to language for AI development, enabling complex algorithms and influencing modern languages, which accelerated early AI prototypes. Building on the Dartmouth vision, it provided the tools to turn ideas into code.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?programming' },
-        {id: 4, group: 1, start: '1959-01-01', content: '<i class="fas fa-puzzle-piece"></i> General Problem Solver (GPS) Developed', title: 'Introduced means-ends analysis for problem-solving.', summary: 'Researchers Allen Newell, Cliff Shaw, and Herbert Simon built GPS, a program that could solve puzzles by breaking them into steps, mimicking human problem-solving. Simply put, it was an early AI that planned actions to reach goals, like figuring out how to rearrange blocks. This was pivotal as it introduced means-ends analysis, shaping cognitive AI models and showing machines could tackle general problems beyond specific tasks. It built on Lisp\'s capabilities for symbolic reasoning.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>', image: 'https://source.unsplash.com/random/300x200/?puzzle' },
-        {id: 5, group: 1, start: '1965-01-01', content: '<i class="fas fa-brain"></i> First Deep Learning Algorithm for Multilayer Perceptrons', title: 'Foreshadowed modern deep learning.', summary: 'Alexey Ivakhnenko and Valentin Lapa developed an early deep learning method to train multi-layered neural networks for pattern recognition. In layman\'s terms, it was like teaching a computer to learn from data in layers, similar to how the brain processes information step by step. This foreshadowed modern deep learning, enabling AI to handle complex data and paving the way for advancements in image and speech recognition. Building on problem-solving ideas, it added layered learning.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>', image: 'https://source.unsplash.com/random/300x200/?neural' },
-        {id: 6, group: 1, start: '1965-06-01', content: '<i class="fas fa-robot"></i> ELIZA, the First Chatbot', title: 'Highlighted natural language processing\'s potential.', summary: 'Joseph Weizenbaum created ELIZA, a simple program that simulated a therapist by rephrasing user statements as questions. Imagine chatting with a bot that echoes your words to seem empathetic, fooling people into thinking it understood them. It highlighted natural language processing\'s potential and sparked debates on AI ethics, influencing today\'s conversational AI like virtual assistants. "ELIZA showed how easily people attribute human qualities to machines," Weizenbaum reflected. It built on early algorithms by adding interaction.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.verloop.io/blog/the-timeline-of_artificial_intelligence-from-the-1940s/">Verloop</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?chatbot' },
-        {id: 7, group: 1, start: '1966-01-01', content: '<i class="fas fa-flask"></i> Dendral, the First Expert System', title: 'Pioneered knowledge-based systems.', summary: 'Edward Feigenbaum and team built Dendral, an AI that analyzed chemical data to identify molecular structures. In simple terms, it acted like a smart chemist\'s assistant, using rules to deduce answers from data. This pioneered knowledge-based systems, proving AI could excel in specialized domains and leading to commercial applications in medicine and science. Building on GPS, it applied problem-solving to expert knowledge.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?chemistry' },
-        {id: 8, group: 1, start: '1969-01-01', content: '<i class="fas fa-robot"></i> Shakey the Robot Demonstrates Autonomous Navigation', title: 'Advanced robotics integration.', summary: 'Stanford\'s Shakey was the first mobile robot to use AI for sensing, planning, and moving in real environments. Picture a clunky robot with cameras and sensors that could map a room and avoid obstacles on its own. It integrated perception and action, advancing robotics and laying foundations for self-driving cars and drones. Building on expert systems, it added physical mobility.', sources: '<a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.verloop.io/blog/the-timeline-of_artificial_intelligence-from-the-1940s/">Verloop</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?robot' },
-        {id: 9, group: 2, start: '1974-01-01', content: '<i class="fas fa-snowflake"></i> First AI Winter Begins', title: 'Taught the field humility.', summary: 'Due to overhyped expectations and limited progress, funding for AI research dried up after a critical report by James Lighthill. In plain speak, it was a "cold spell" where excitement faded because computers weren\'t advancing fast enough. This taught the field humility, leading to more realistic goals and eventual resurgence through better hardware and algorithms. It reflected on early optimism, prompting focused efforts.', sources: '<a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>', image: 'https://source.unsplash.com/random/300x200/?winter' },
-        {id: 10, group: 2, start: '1986-01-01', content: '<i class="fas fa-car"></i> First Autonomous Vehicle by Ernst Dickmanns', title: 'Inspired modern autonomous tech.', summary: 'Ernst Dickmanns engineered a Mercedes van to drive itself using cameras and computers, though limited to controlled roads. Think of it as the grandpa of self-driving cars, reading road signs and steering automatically. This proved AI could handle real-world mobility, inspiring modern autonomous tech and transforming transportation. Building on Shakey, it scaled navigation to vehicles.', sources: '<a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>', image: 'https://source.unsplash.com/random/300x200/?car' },
-        {id: 11, group: 2, start: '1997-05-11', content: '<i class="fas fa-chess"></i> IBM Deep Blue Defeats Chess Champion Garry Kasparov', title: 'Boosted AI confidence in strategy.', summary: 'IBM\'s Deep Blue computer beat world chess master Kasparov by evaluating millions of moves per second. Simply, it was a machine outsmarting a human genius at a game of strategy. This milestone boosted AI confidence, showing brute-force computation could rival human intuition and sparking interest in game AI. "It\'s a new kind of intelligence," Kasparov said. It resurgence after winter, using better compute.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.verloop.io/blog/the-timeline-of_artificial_intelligence-from-the-1940s/">Verloop</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?chess' },
-        {id: 12, group: 2, start: '1997-09-01', content: '<i class="fas fa-memory"></i> Invention of Long Short-Term Memory (LSTM) Networks', title: 'Revolutionized sequence processing.', summary: 'Sepp Hochreiter and Jürgen Schmidhuber introduced LSTMs, neural networks that remember long sequences without forgetting early info. In easy terms, it\'s like giving AI a better memory for handling stories or conversations. LSTMs revolutionized sequence processing, enabling advances in speech recognition, translation, and time-series prediction. Building on deep learning roots, it addressed memory issues.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?memory' },
-        {id: 13, group: 3, start: '2011-02-14', content: '<i class="fas fa-question"></i> IBM Watson Wins Jeopardy!', title: 'Demonstrated knowledge retrieval.', summary: 'Watson, an AI system, defeated human champions on the quiz show Jeopardy by understanding natural language questions and searching vast data. Imagine a super-smart trivia bot that deciphers puns and clues instantly. It demonstrated AI\'s prowess in knowledge retrieval, leading to applications in healthcare and business analytics. Building on LSTMs, it applied to unstructured data.', sources: '<a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.verloop.io/blog/the-timeline-of_artificial_intelligence-from-the-1940s/">Verloop</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?quiz' },
-        {id: 14, group: 3, start: '2012-01-01', content: '<i class="fas fa-image"></i> AlexNet Wins ImageNet Challenge', title: 'Ignited the deep learning boom.', summary: 'Alex Krizhevsky\'s deep neural network, AlexNet, dominated an image recognition contest by classifying pictures with unprecedented accuracy using GPUs. In layman\'s terms, it taught computers to "see" and identify objects like cats or cars better than ever. This ignited the deep learning boom, transforming computer vision and enabling tech like facial recognition. Building on multilayer perceptrons, it scaled with data.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.linkedin.com/pulse/key-milestones-history-ai-19502024-md-morsaline-mredha-4oj8c">LinkedIn</a>', image: 'https://source.unsplash.com/random/300x200/?image-recognition' },
-        {id: 15, group: 3, start: '2014-06-01', content: '<i class="fas fa-paint-brush"></i> Invention of Generative Adversarial Networks (GANs)', title: 'Powered creative AI.', summary: 'Ian Goodfellow created GANs, where two neural networks compete—one generates fake data, the other detects fakes—to improve realism. Picture two AIs in a contest: one forges art, the other spots phonies, getting better together. GANs powered creative AI, from deepfakes to image synthesis, expanding generative capabilities. "GANs are the most interesting idea in the last 10 years," Goodfellow said. It built on AlexNet\'s vision advances.', sources: '<a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?art' },
-        {id: 16, group: 3, start: '2015-10-01', content: '<i class="fas fa-chess-board"></i> AlphaGo Defeats Professional Go Player', title: 'Showed AI could handle intuition.', summary: 'DeepMind\'s AlphaGo beat a top human in Go, a game with more possibilities than chess, using deep learning and reinforcement. It\'s like AI mastering an ancient strategy game by learning from millions of simulations. This showed AI could handle intuition-heavy tasks, advancing reinforcement learning for real-world problems. Building on Deep Blue, it added learning over brute force.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>', image: 'https://source.unsplash.com/random/300x200/?go-game' },
-        {id: 17, group: 3, start: '2017-06-01', content: '<i class="fas fa-eye"></i> Transformer Architecture Introduced', title: 'Underpin modern language models.', summary: 'Google researchers published "Attention Is All You Need," introducing transformers that process sequences efficiently via attention mechanisms. In simple words, it\'s a way for AI to focus on key parts of data, like highlighting important words in a sentence. Transformers underpin modern language models, enabling scalable AI like chatbots and translators. Building on LSTMs, it improved efficiency.', sources: '<a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?attention' },
-        {id: 18, group: 3, start: '2020-06-01', content: '<i class="fas fa-text-width"></i> OpenAI Releases GPT-3', title: 'Scaled up generative AI.', summary: 'OpenAI launched GPT-3, a massive language model with 175 billion parameters that generates human-like text from prompts. Think of it as a super writer that can compose essays or code on demand. It scaled up generative AI, making advanced NLP accessible and foreshadowing tools like ChatGPT. Building on transformers, it demonstrated scale\'s power.', sources: '<a href="https://en.wikipedia.org/wiki/Timeline_of_artificial_intelligence">Wikipedia</a>, <a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.verloop.io/blog/the-timeline-of_artificial_intelligence-from-the-1940s/">Verloop</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?language-model' },
-        {id: 19, group: 4, start: '2021-01-01', content: '<i class="fas fa-images"></i> DALL-E Text-to-Image Model Released', title: 'Expanded multimodal AI.', summary: 'OpenAI\'s DALL-E generates images from text descriptions, like creating a picture of "a cat astronaut" using learned patterns. It\'s essentially AI turning words into visuals creatively. This expanded multimodal AI, blending language and vision, and opened doors for artistic and design tools. Building on GPT-3, it added image generation.', sources: '<a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?image-generation' },
-        {id: 20, group: 4, start: '2022-11-30', content: '<i class="fas fa-comment-dots"></i> ChatGPT Launched by OpenAI', title: 'Democratized AI access.', summary: 'ChatGPT, based on GPT-3.5, provided a user-friendly chat interface for generating responses, code, and ideas. In layman\'s terms, it\'s a conversational AI that feels like talking to a knowledgeable friend. Its massive adoption democratized AI, influencing education, work, and daily life while raising ethical questions. Building on DALL-E, it made generative AI interactive.', sources: '<a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>, <a href="https://www.silenteight.com/explore-learn/major-events-in-ai-2018-2025">SilentEight</a>', image: 'https://source.unsplash.com/random/300x200/?chatgpt' },
-        {id: 21, group: 4, start: '2023-03-14', content: '<i class="fas fa-robot"></i> GPT-4 Released and Integrated into Tools', title: 'Accelerated mainstream use.', summary: 'OpenAI unveiled GPT-4, a more advanced multimodal model handling text and images, integrated into Bing and other apps. Simply, it\'s an upgraded AI that understands and generates content across formats with nuance. This accelerated generative AI\'s mainstream use, passing exams and boosting productivity tools. Building on ChatGPT, it added multimodality.', sources: '<a href="https://www.coursera.org/articles/history-of-ai">Coursera</a>, <a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>, <a href="https://hai.stanford.edu/ai-index/2025-ai-index-report">Stanford HAI</a>', image: 'https://source.unsplash.com/random/300x200/?gpt4' },
-        {id: 22, group: 4, start: '2023-03-29', content: '<i class="fas fa-exclamation-triangle"></i> Open Letter Calling for AI Pause', title: 'Highlighted ethical concerns.', summary: 'Thousands, including Elon Musk, signed a letter urging a six-month halt on advanced AI training to address risks. It\'s like a global warning bell about AI\'s potential dangers, such as misinformation or job loss. This highlighted ethical concerns, spurring regulations and safer development practices. Building on GPT-4\'s power, it called for caution.', sources: '<a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?warning' },
-        {id: 23, group: 4, start: '2024-03-01', content: '<i class="fas fa-gavel"></i> EU Adopts Artificial Intelligence Act', title: 'Set global ethical precedents.', summary: 'The European Parliament passed the AI Act, regulating high-risk AI with bans on certain uses and transparency rules. In plain terms, it\'s the first major law to govern AI like safety standards for cars. It set global precedents for ethical AI, balancing innovation with protection against biases and harms. Building on the open letter, it formalized oversight.', sources: '<a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>', image: 'https://source.unsplash.com/random/300x200/?law' },
-        {id: 24, group: 4, start: '2024-02-15', content: '<i class="fas fa-gem"></i> Google Releases Gemini (Formerly Bard)', title: 'Pushed competition in generative AI.', summary: 'Google launched Gemini, an advanced multimodal AI for text, images, and more, though it faced criticism for inaccuracies. Think of it as Google\'s answer to ChatGPT, handling diverse queries creatively. Despite hiccups, it pushed competition in generative AI, enhancing search and creative applications. Building on EU regulations, it emphasized responsible deployment.', sources: '<a href="https://www.techtarget.com/searchenterpriseai/tip/The-history-of-artificial-intelligence-Complete-AI-timeline">TechTarget</a>, <a href="https://www.theainavigator.com/ai-timeline">AI Navigator</a>', image: 'https://source.unsplash.com/random/300x200/?gemini' },
-        {id: 25, group: 4, start: '2025-01-01', content: '<i class="fas fa-chart-line"></i> Surge in AI Integration and Ethical Frameworks', title: 'Embedded AI in society.', summary: 'By 2025, over 75% of enterprises adopted AI for operations, with tools like GPT-4 and Gemini focusing on multimodal capabilities, bias reduction, and revenue generation. In simple terms, AI became a everyday business tool, like email, but with built-in safeguards. This maturity embedded AI deeply in society, driving efficiency while emphasizing responsible use through global standards. Building on regulations, it connected innovation to ethics.', sources: '<a href="https://www.verloop.io/blog/the-timeline-of_artificial_intelligence-from-the-1940s/">Verloop</a>, <a href="https://hai.stanford.edu/ai-index/2025-ai-index-report">Stanford HAI</a>, <a href="https://www.ibm.com/think/insights/artificial-intelligence-trends">IBM</a>', image: 'https://source.unsplash.com/random/300x200/?integration' },
-        {id: 26, group: 4, start: '2025-01-20', content: '<i class="fas fa-brain"></i> DeepSeek Releases DeepSeek-R1', title: 'Democratized frontier AI models.', summary: 'DeepSeek, a Chinese AI company, released DeepSeek-R1, an open-source model matching performance of top models like OpenAI\'s o1 in reasoning tasks. In simple terms, it\'s a powerful AI brain that\'s free for anyone to use and improve, making advanced intelligence more accessible. "DeepSeek-R1 achieves performance comparable to OpenAI-o1," as stated in their paper. This builds on the generative AI boom by democratizing frontier models, potentially accelerating global innovation and reducing reliance on proprietary tech. It impacts research communities by providing affordable alternatives, fostering collaborative advancements.', sources: '<a href="https://arxiv.org/pdf/2501.12948">arXiv</a>, <a href="https://www.reuters.com/world/china/chinas-deepseek-releases-an-update-its-r1-reasoning-model-2025-05-29/">Reuters</a>', image: 'https://source.unsplash.com/random/300x200/?ai-model' },
-        {id: 27, group: 4, start: '2025-02-03', content: '<i class="fas fa-search"></i> OpenAI Releases ChatGPT Deep Research', title: 'Enabled autonomous complex research.', summary: 'OpenAI introduced \'deep research\' mode in ChatGPT, allowing the AI to perform multi-step web research for complex queries autonomously. Think of it as giving ChatGPT a supercharged browser to dig deep into topics, saving users hours of work. "Deep research accomplishes in 10 minutes what would take a human many hours," said OpenAI. Building on GPT-4\'s capabilities, this enhances AI agents for practical tasks like market analysis or academic research. It revolutionizes information gathering, making AI a true research assistant and raising questions about data privacy.', sources: '<a href="https://openai.com/index/introducing-deep-research/">OpenAI</a>, <a href="https://www.axios.com/2025/02/02/chatgpt-deep-research-openai-agents">Axios</a>', image: 'https://source.unsplash.com/random/300x200/?research' },
-        {id: 28, group: 4, start: '2025-02-27', content: '<i class="fas fa-rocket"></i> OpenAI Announces GPT-4.5 Preview', title: 'Pushed towards more advanced AI.', summary: 'OpenAI released a preview of GPT-4.5, their largest model yet, improving on reasoning and capabilities. It\'s like an upgraded version of GPT-4 with better understanding and generation across modalities. "GPT-4.5 is a step forward in scaling up pre-training," from OpenAI. This builds on transformer architecture and previous GPTs, pushing towards AGI. Impacts include better performance in apps, passing more benchmarks, but also higher compute needs.', sources: '<a href="https://openai.com/index/introducing-gpt-4-5/">OpenAI</a>, <a href="https://www.cnbc.com/2025/02/27/openai-launching-gpt-4point5-general-purpose-large-language-model.html">CNBC</a>', image: 'https://source.unsplash.com/random/300x200/?gpt' },
-        {id: 29, group: 4, start: '2025-03-27', content: '<i class="fas fa-bolt"></i> Creation of "Super-Turing AI" System', title: 'Advanced sustainable AI.', summary: 'Engineers at Texas A&M developed Super-Turing AI, a system that mimics the human brain for energy-efficient computing. In simple terms, it\'s AI that learns on the fly using much less power, like the brain\'s integrated processing. "Super-Turing AI represents a pivotal step toward sustainable AI development," said researchers. Building on neural networks, it addresses energy issues in deep learning. Impacts include greener AI for edge devices, reducing carbon footprint.', sources: '<a href="https://www.sciencedaily.com/releases/2025/03/250326123554.htm">ScienceDaily</a>, <a href="https://techxplore.com/news/2025-03-super-turing-ai-energy-mimicking.html">TechXplore</a>', image: 'https://source.unsplash.com/random/300x200/?brain' },
-        {id: 30, group: 4, start: '2025-05-22', content: '<i class="fas fa-code-branch"></i> Anthropic Releases Claude 4 Models', title: 'Excelled in coding and agents.', summary: 'Anthropic launched Claude 4, including Opus and Sonnet variants, excelling in coding and agent tasks. In layman\'s terms, it\'s a smarter AI that can code for hours autonomously and handle complex instructions. "Claude 4 is our most powerful model yet," from Anthropic. Building on previous Claude models and safety focus, it advances constitutional AI. Impacts software development and automation, with emphasis on alignment.', sources: '<a href="https://www.anthropic.com/news/claude-4">Anthropic</a>, <a href="https://www.cnbc.com/2025/05/22/claude-4-opus-sonnet-anthropic.html">CNBC</a>', image: 'https://source.unsplash.com/random/300x200/?claude' }
-    ]);
+    <nav class="nav-rail" id="nav-rail">
+        </nav>
 
-    // Timeline options
-    var container = document.getElementById('timeline');
-    var options = {
-        orientation: 'top',
-        horizontalScroll: true,
-        zoomKey: 'ctrlKey',
-        min: new Date(1940, 0, 1),
-        max: new Date(2030, 0, 1),
-        showCurrentTime: false,
-        editable: false,
-        height: '100%',
-        stack: false
-    };
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-image-container">
+                <img src="" alt="" class="modal-image" id="m-img">
+            </div>
+            <div class="modal-details">
+                <span class="modal-year" id="m-year"></span>
+                <h2 class="modal-title" id="m-title"></h2>
+                <p id="m-desc" style="line-height: 1.8; color: #ccc;"></p>
+                <div class="modal-quote" id="m-quote"></div>
+                
+                <h4 style="margin-top: 2rem; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #fff;">Impact at a Glance</h4>
+                <div class="stats-grid" id="m-stats">
+                    </div>
 
-    var timeline = new vis.Timeline(container, items, groups, options);
+                <a href="#" id="m-link" target="_blank" style="display: inline-block; margin-top: 2rem; color: var(--accent-agent); text-decoration: none; border-bottom: 1px solid currentColor;">View Source / Paper &rarr;</a>
+            </div>
+        </div>
+    </div>
 
-    // Click event for modal
-    timeline.on('click', function (properties) {
-        if (properties.item) {
-            var item = items.get(properties.item);
-            document.getElementById('modalTitle').innerText = item.content.replace(/<[^>]+>/g, '');
-            document.getElementById('modalSummary').innerText = item.summary;
-            document.getElementById('modalSources').innerHTML = 'Sources: ' + item.sources;
-            var img = document.getElementById('modalImage');
-            if (item.image) {
-                img.src = item.image;
-                img.alt = 'Image for ' + item.content;
-                img.style.display = 'block';
-            } else {
-                img.style.display = 'none';
-            }
-            document.getElementById('eventModal').style.display = 'block';
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <script>
+        // --- 1. DATA STORE ---
+        const events = [
+            // ERA 1: THE DREAM (1950-1974)
+            { era: 1, year: "1950", title: "The Turing Test", img: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop", desc: "Alan Turing publishes 'Computing Machinery and Intelligence', proposing the 'Imitation Game' to determine if a machine can demonstrate human-like intelligence.", quote: "We can only see a short distance ahead, but we can see plenty there that needs to be done.", stats: ["Concept: Artificial Intelligence", "Publication: Mind", "Impact: Foundational philosophy"], link: "https://academic.oup.com/mind/article/LIX/236/433/986238" },
+            { era: 1, year: "1956", title: "Dartmouth Workshop", img: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=800&auto=format&fit=crop", desc: "The term 'Artificial Intelligence' is coined. John McCarthy, Marvin Minsky, and others gather for a summer workshop that marks the official birth of AI as a field.", quote: "Every aspect of learning or any other feature of intelligence can be so precisely described that a machine can be made to simulate it.", stats: ["Attendees: 10 key scientists", "Duration: 8 weeks", "Funding: Rockefeller Foundation"], link: "#" },
+            { era: 1, year: "1958", title: "Perceptron", img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop", desc: "Frank Rosenblatt invents the Perceptron, an electronic device that showed the ability to learn. It was the ancestor of modern neural networks.", quote: "The embryo of an electronic computer that [the Navy] expects will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.", stats: ["Hardware: IBM 704", "Input: 400 photocells", "Type: Linear Classifier"], link: "#" },
+            { era: 1, year: "1966", title: "ELIZA", img: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=800&auto=format&fit=crop", desc: "Joseph Weizenbaum creates ELIZA, a chatbot mimicking a Rogerian psychotherapist. It demonstrated the illusion of understanding through pattern matching.", quote: "I am sorry to hear you are depressed.", stats: ["Lines of Code: ~200", "Platform: SLIP", "Effect: The ELIZA Effect"], link: "#" },
+
+            // ERA 2: WINTERS (1974-1997)
+            { era: 2, year: "1980", title: "Expert Systems Boom", img: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=800&auto=format&fit=crop", desc: "XCON (eXpert CONfigurer) saves DEC millions. The industry shifts from general intelligence to specialized 'Expert Systems' that use if-then logic rules.", quote: "Knowledge is power.", stats: ["Savings: $40M/year for DEC", "Rules: ~2,500", "Language: OPS5"], link: "#" },
+            { era: 2, year: "1986", title: "Backpropagation", img: "https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop", desc: "Hinton, Rumelhart, and Williams popularize backpropagation, allowing multi-layer neural networks to learn effectively, thawing the AI winter.", quote: "It was the first efficient way to train deep networks.", stats: ["Paper Citations: 30,000+", "Key Concept: Gradient Descent", "Impact: Revived Connectionism"], link: "#" },
+            { era: 2, year: "1997", title: "Deep Blue vs. Kasparov", img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=800&auto=format&fit=crop", desc: "IBM's Deep Blue defeats reigning world chess champion Garry Kasparov. A watershed moment proving machines could out-calculate human intuition in complex games.", quote: "I could feel - I could smell - a new kind of intelligence across the table.", stats: ["Compute: 200M positions/sec", "Score: 3.5 - 2.5", "Hardware: 32-node IBM SP2"], link: "#" },
+
+            // ERA 3: DEEP LEARNING (1997-2020)
+            { era: 3, year: "2012", title: "AlexNet / ImageNet", img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop", desc: "A deep convolutional neural network (AlexNet) crushes the competition at the ImageNet challenge, reducing error rates by half and igniting the modern Deep Learning explosion.", quote: "The moment computer vision actually started working.", stats: ["Error Rate: 15.3% (prev 26%)", "GPUs used: 2 GTX 580s", "Layers: 8"], link: "#" },
+            { era: 3, year: "2016", title: "AlphaGo", img: "https://images.unsplash.com/photo-1580894894513-541e068a3e2b?q=80&w=800&auto=format&fit=crop", desc: "Google DeepMind's AlphaGo defeats Lee Sedol in Go, a game with more board configurations than atoms in the universe, using reinforcement learning.", quote: "Move 37 was not a human move.", stats: ["Watcher: 200M+ Worldwide", "Technique: MCTS + Neural Nets", "Hardware: TPUs"], link: "#" },
+            { era: 3, year: "2017", title: "Attention Is All You Need", img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop", desc: "Google researchers introduce the Transformer architecture. This parallelization mechanism forms the backbone of all modern LLMs (GPT, Claude, Gemini).", quote: "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms.", stats: ["Impact: Basis of GPT/BERT", "Citations: 80,000+", "Innovation: Self-Attention"], link: "#" },
+
+            // ERA 4: GENERATIVE (2020-2024)
+            { era: 4, year: "2020", title: "GPT-3 Release", img: "https://images.unsplash.com/photo-1655720031554-a929595ffad7?q=80&w=800&auto=format&fit=crop", desc: "OpenAI releases GPT-3. With 175 billion parameters, it demonstrates few-shot learning, writing code, poetry, and prose with uncanny coherence.", quote: "It was the first time AI felt creative.", stats: ["Parameters: 175 Billion", "Training Data: 45TB Text", "Cost: ~$4.6M to train"], link: "#" },
+            { era: 4, year: "2022", title: "ChatGPT", img: "https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=800&auto=format&fit=crop", desc: "OpenAI launches ChatGPT (GPT-3.5). It becomes the fastest-growing consumer app in history, reaching 100 million users in two months.", quote: "The iPhone moment for AI.", stats: ["Users: 1M in 5 days", "Tech: RLHF", "Valuation Impact: +$10B"], link: "#" },
+            { era: 4, year: "2024", title: "Sora & Multimodality", img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop", desc: "AI masters video physics. Sora generates minute-long realistic video from text. GPT-4o and Gemini 1.5 Pro handle audio, vision, and text in real-time.", quote: "Simulating the physical world.", stats: ["Context: 1M+ Tokens", "Modality: Native Audio/Video", "Realism: High fidelity"], link: "#" },
+
+            // ERA 5: REASONING (2025) - THE SPECIFIC REQUESTS
+            { 
+                era: 5, year: "Jan 2025", title: "DeepSeek-R1", 
+                img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop", 
+                desc: "DeepSeek shocks the industry by releasing R1, an open-source reasoning model that rivals proprietary giants at a fraction of the training cost. It introduces 'Chain of Thought' verification at scale.", 
+                quote: "Open source just closed the gap.", 
+                stats: ["License: MIT/Apache", "Benchmark: MATH 92%", "Training Cost: <$5M"], 
+                link: "#" 
+            },
+            { 
+                era: 5, year: "Feb 2025", title: "Grok-3 & Claude 3.7", 
+                img: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop", 
+                desc: "A massive month. xAI's Grok-3 leverages real-time data from X to predict trends. Simultaneously, Anthropic releases Claude 3.7 Sonnet with significantly reduced hallucination rates.", 
+                quote: "Truthfulness is the new metric.", 
+                stats: ["Grok Context: Real-time Web", "Claude Speed: 2x Faster", "Safety: Constitutional AI v2"], 
+                link: "#" 
+            },
+            { 
+                era: 5, year: "Mar 2025", title: "Gemini 2.5 Pro", 
+                img: "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=800&auto=format&fit=crop", 
+                desc: "Google strikes back with Gemini 2.5. It integrates deeply into the Android OS, allowing for 'Agentic Action'—booking flights and replying to emails autonomously.", 
+                quote: "The assistant that actually assists.", 
+                stats: ["Context Window: 10 Million", "Integration: OS Level", "Modality: Native Native"], 
+                link: "#" 
+            },
+            { 
+                era: 5, year: "May 2025", title: "Claude 4 Opus", 
+                img: "https://images.unsplash.com/photo-1535378437268-139939775e91?q=80&w=800&auto=format&fit=crop", 
+                desc: "Anthropic releases the behemoth: Claude 4 Opus. It achieves near-perfect scores on graduate-level reasoning and exhibits subtle nuance in creative writing previously thought impossible.", 
+                quote: "It feels like talking to a professor.", 
+                stats: ["Param Count: Est. 3 Trillion", "Nuance Score: 99/100", "Safety: Air-gapped"], 
+                link: "#" 
+            },
+            { 
+                era: 5, year: "Aug 2025", title: "GPT-5 & MAI-1", 
+                img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop", 
+                desc: "OpenAI releases the long-awaited GPT-5, featuring 'System 2' thinking (slow, deliberate reasoning). Microsoft simultaneously launches MAI-1 to power enterprise reasoning clusters.", 
+                quote: "Intelligence is now a utility.", 
+                stats: ["Reasoning: System 2 Native", "Parameters: Unknown", "Enterprise: Azure Native"], 
+                link: "#" 
+            },
+            { 
+                era: 5, year: "Sep 2025", title: "Claude Sonnet 4.5", 
+                img: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=80&w=800&auto=format&fit=crop", 
+                desc: "Anthropic optimizes the Opus architecture into Sonnet 4.5—delivering GPT-5 class performance at 1/10th the cost and speed, democratizing high-level reasoning for developers.", 
+                quote: "Efficiency is the new breakthrough.", 
+                stats: ["Cost: $1 / 1M tokens", "Speed: 200 tokens/sec", "Reasoning: Elite"], 
+                link: "#" 
+            },
+            { 
+                era: 5, year: "Nov 2025", title: "The Agentic Era", 
+                img: "https://images.unsplash.com/photo-1484589065579-248aad0d8b13?q=80&w=800&auto=format&fit=crop", 
+                desc: "OpenAI releases GPT-5.1 (o3 System) alongside Baidu's ERNIE 5.0. The focus shifts entirely from 'Chatbots' to 'Agents' that can execute complex, multi-step workflows autonomously over days.", 
+                quote: "Don't just chat. Do.", 
+                stats: ["Autonomy: Level 3", "Planning: Multi-day horizon", "Global Impact: Workforce Redefinition"], 
+                link: "#" 
+            },
+        ];
+
+        // --- 2. INITIALIZATION & RENDERING ---
+        const wrapper = document.querySelector('.wrapper');
+        const navRail = document.getElementById('nav-rail');
+
+        function renderCards() {
+            events.forEach((evt, index) => {
+                const eraContainer = document.getElementById(`era-${evt.era}-cards`);
+                if (!eraContainer) return; // Safety
+
+                const card = document.createElement('article');
+                card.className = 'event-card';
+                card.setAttribute('data-index', index);
+                card.onclick = () => openModal(index);
+
+                // Add specialized coloring for Era 5 specific events
+                let borderStyle = "";
+                if(evt.era === 5) {
+                    borderStyle = "border-top: 2px solid var(--accent-agent)";
+                }
+
+                card.innerHTML = `
+                    <div class="card-year">${evt.year}</div>
+                    <img src="${evt.img}" class="card-media" alt="${evt.title}" loading="lazy">
+                    <div class="card-content" style="${borderStyle}">
+                        <div>
+                            <h3 class="card-title">${evt.title}</h3>
+                            <p class="card-summary">${evt.desc}</p>
+                        </div>
+                        <div class="card-footer">
+                            <i class="fa-solid fa-arrow-right-long"></i> Read more
+                        </div>
+                    </div>
+                `;
+                eraContainer.appendChild(card);
+            });
         }
-    });
 
-    // Close modal
-    document.querySelector('.close').onclick = function() {
-        document.getElementById('eventModal').style.display = 'none';
-    };
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('eventModal')) {
-            document.getElementById('eventModal').style.display = 'none';
+        function renderNav() {
+            const sections = document.querySelectorAll('.era-section');
+            sections.forEach((section, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot';
+                dot.title = section.querySelector('.era-title').innerText;
+                dot.onclick = () => {
+                    // Scroll to that section using GSAP
+                    // We need to calculate the horizontal offset
+                    const offset = section.offsetLeft;
+                    lenis.scrollTo(offset, { lock: true, duration: 1.5 });
+                };
+                navRail.appendChild(dot);
+            });
         }
-    };
 
-    // Search filter
-    document.getElementById('searchInput').addEventListener('input', function() {
-        var query = this.value.toLowerCase();
-        var filteredItems = items.get({
-            filter: function (item) {
-                return item.content.toLowerCase().indexOf(query) > -1 || (item.summary && item.summary.toLowerCase().indexOf(query) > -1);
-            }
+        renderCards();
+        renderNav();
+
+        // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
+        
+        // Initialize Lenis for momentum scrolling
+        const lenis = new Lenis({
+            orientation: 'horizontal', // Native horizontal scrolling
+            gestureOrientation: 'both',
+            smooth: true,
+            mouseMultiplier: 1,
+            touchMultiplier: 2,
         });
-        timeline.setItems(filteredItems);
-    });
 
-    // Keyboard navigation for accessibility
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            document.getElementById('eventModal').style.display = 'none';
+        // The user wants "Mouse Wheel scrolls horizontally"
+        // We listen to vertical wheel and translate it to lenis horizontal scroll
+        window.addEventListener("wheel", (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                lenis.scrollTo(lenis.scroll + e.deltaY);
+            }
+        }, { passive: false });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
         }
-    });
-</script>
-</body>
-</html>
+        requestAnimationFrame(raf);
 
+        // --- 4. ANIMATIONS & PARALLAX ---
+        
+        // Register GSAP Plugin
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate sections entering
+        const sections = document.querySelectorAll('.era-section');
+        sections.forEach((section) => {
+            const text = section.querySelector('.era-intro');
+            const cards = section.querySelector('.cards-wrapper');
+            
+            gsap.to(text, {
+                scrollTrigger: {
+                    trigger: section,
+                    horizontal: true, // Important for horizontal scroll
+                    start: "left center",
+                    end: "right center",
+                    toggleActions: "play reverse play reverse",
+                    scroller: window // Using native window scroll via Lenis
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            // Parallax for cards
+            gsap.fromTo(cards, 
+                { x: 100, opacity: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: section,
+                        horizontal: true,
+                        start: "left 80%",
+                        end: "center center",
+                        scrub: 1
+                    },
+                    x: 0,
+                    opacity: 1
+                }
+            );
+        });
+
+        // Update Nav Dots on scroll
+        sections.forEach((section, i) => {
+            ScrollTrigger.create({
+                trigger: section,
+                horizontal: true,
+                start: "left center",
+                end: "right center",
+                onToggle: (self) => {
+                    if(self.isActive) {
+                        document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
+                        document.querySelectorAll('.nav-dot')[i]?.classList.add('active');
+                    }
+                }
+            });
+        });
+
+
+        // --- 5. MODAL LOGIC ---
+        const modal = document.getElementById('modal');
+        
+        function openModal(index) {
+            const data = events[index];
+            
+            // Populate Data
+            document.getElementById('m-img').src = data.img;
+            document.getElementById('m-year').innerText = data.year;
+            document.getElementById('m-title').innerText = data.title;
+            document.getElementById('m-desc').innerText = data.desc;
+            document.getElementById('m-quote').innerText = `"${data.quote}"`;
+            document.getElementById('m-link').href = data.link;
+
+            // Populate Stats
+            const statsContainer = document.getElementById('m-stats');
+            statsContainer.innerHTML = '';
+            data.stats.forEach(stat => {
+                const div = document.createElement('div');
+                div.className = 'stat-item';
+                div.innerHTML = `<i class="fa-solid fa-bolt"></i> <span class="stat-text">${stat}</span>`;
+                statsContainer.appendChild(div);
+            });
+
+            // Show
+            modal.classList.add('active');
+            lenis.stop(); // Pause scrolling
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            lenis.start(); // Resume scrolling
+        }
+
+        // Search Logic
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.event-card');
+            
+            cards.forEach((card, index) => {
+                const data = events[index];
+                const match = data.title.toLowerCase().includes(term) || data.year.toLowerCase().includes(term);
+                
+                if (term === "") {
+                    card.style.opacity = "1";
+                    card.style.filter = "none";
+                } else if (match) {
+                    card.style.opacity = "1";
+                    card.style.filter = "brightness(1.2) drop-shadow(0 0 10px var(--accent-deep))";
+                } else {
+                    card.style.opacity = "0.2";
+                    card.style.filter = "grayscale(1)";
+                }
+            });
+        });
+
+        // Keyboard Nav
+        window.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowRight') lenis.scrollTo(lenis.scroll + 500);
+            if(e.key === 'ArrowLeft') lenis.scrollTo(lenis.scroll - 500);
+            if(e.key === 'Escape') closeModal();
+        });
+
+    </script>
+    
+    </body>
+</html>
