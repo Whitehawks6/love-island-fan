@@ -43,18 +43,15 @@
             background-color: var(--bg);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            /* Allow horizontal scroll, which Lenis will control */
+            /* FIXED: Let Lenis handle all overflow */
             overflow: hidden;
-            overscroll-behavior-x: none;
             height: 100%;
             width: 100%;
-            /* Hide the actual scrollbar */
-            scrollbar-width: none; /* Firefox */
         }
-        
-        body::-webkit-scrollbar {
-            display: none; /* Safari and Chrome */
-        }
+
+        /* Hide scrollbars globally */
+        ::-webkit-scrollbar { display: none; }
+        scrollbar-width: none;
 
         h1, h2, h3, .era-title { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.03em; }
 
@@ -75,12 +72,11 @@
         }
 
         /* --- Main Container --- */
-        /* FIXED: No more outer-wrapper. This is the main scrolling element. */
         .wrapper {
             display: flex;
             flex-wrap: nowrap;
             height: 100vh;
-            width: max-content; /* Will stretch based on content */
+            width: max-content;
             will-change: transform;
         }
 
@@ -92,14 +88,14 @@
             padding: 0 5vw;
             border-right: 1px solid rgba(255,255,255,0.05);
             position: relative;
+            flex-shrink: 0; /* Prevent compression */
         }
 
         .era-intro {
-            /* FIXED: User's requested change */
             min-width: 25vw;
             max-width: 35vw;
             padding-right: 4rem;
-            opacity: 0; /* Animate in */
+            opacity: 0;
             transform: translateY(20px);
         }
 
@@ -134,7 +130,6 @@
             display: flex;
             gap: 2rem;
             padding-left: 2rem;
-            /* Added for GSAP animation */
             opacity: 0;
             transform: translateX(100px);
         }
@@ -176,7 +171,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 50%; /* flex-grow: 1 also works */
+            height: 50%;
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
 
@@ -216,7 +211,6 @@
         [data-era="agent"] .era-label.highlight { box-shadow: 0 0 15px rgba(245,158,11,0.4); }
         [data-era="agent"] .era-title.highlight { text-shadow: 0 0 20px rgba(245,158,11,0.5); }
         [data-era="agent"] .card-content.highlight { border-top: 2px solid var(--accent-agent); }
-
 
         /* --- UI Elements --- */
         .nav-rail {
@@ -313,6 +307,7 @@
         .modal-year { color: var(--accent-deep); font-weight: 700; margin-bottom: 0.5rem; display: block;}
         .modal-title { font-size: 2.5rem; font-family: 'Space Grotesk'; margin-bottom: 1.5rem; line-height: 1.1; }
         .modal-quote {
+            border-left: 3px solid currentColor; /* Dynamic via JS */
             padding-left: 1.5rem;
             font-style: italic;
             color: #ddd;
@@ -359,417 +354,4 @@
         </section>
 
         <section class="era-section" data-era="deep">
-            <div class="era-intro">
-                <span class="era-label">1997 – 2020</span>
-                <h2 class="era-title">Deep Learning</h2>
-                <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
-            </div>
-            <div class="cards-wrapper" id="era-3-cards"></div>
-        </section>
-
-        <section class="era-section" data-era="gen">
-            <div class="era-intro">
-                <span class="era-label">2020 – 2024</span>
-                <h2 class="era-title">Generative Explosion</h2>
-                <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
-            </div>
-            <div class="cards-wrapper" id="era-4-cards"></div>
-        </section>
-
-         <section class="era-section" data-era="agent">
-            <div class="era-intro">
-                <span class="era-label highlight">2025</span>
-                <h2 class="era-title highlight">Reasoning &amp; Agents</h2>
-                <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
-            </div>
-            <div class="cards-wrapper" id="era-5-cards"></div>
-        </section>
-
-        <div style="width: 10vw; flex-shrink: 0;"></div>
-    </div>
-
-    <nav class="nav-rail" id="nav-rail"></nav>
-
-    <div class="modal-overlay" id="modal" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()"> <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-image-container">
-                <img src="" alt="" class="modal-image" id="m-img">
-            </div>
-            <div class="modal-details">
-                <span class="modal-year" id="m-year"></span>
-                <h2 class="modal-title" id="m-title"></h2>
-                <p id="m-desc" style="line-height: 1.8; color: #ccc;"></p>
-                <div class="modal-quote" id="m-quote"></div>
-                
-                <h4 style="margin-top: 2rem; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #fff;">Impact at a Glance</h4>
-                <div class="stats-grid" id="m-stats"></div>
-
-                <a href="#" id="m-link" target="_blank" style="display: inline-block; margin-top: 2rem; color: var(--accent-agent); text-decoration: none; border-bottom: 1px solid currentColor;">View Source / Paper →</a>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
-
-    <script>
-        // --- 1. DATA STORE ---
-        // (This is the database of all events)
-        const events = [
-            // ERA 1: THE DREAM (1950-1974)
-            { era: 1, year: "1950", title: "The Turing Test", img: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop", desc: "Alan Turing publishes 'Computing Machinery and Intelligence', proposing the 'Imitation Game' to determine if a machine can demonstrate human-like intelligence.", quote: "We can only see a short distance ahead, but we can see plenty there that needs to be done.", stats: ["Concept: Artificial Intelligence", "Publication: Mind", "Impact: Foundational philosophy"], link: "https://academic.oup.com/mind/article/LIX/236/433/986238" },
-            { era: 1, year: "1956", title: "Dartmouth Workshop", img: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=800&auto=format&fit=crop", desc: "The term 'Artificial Intelligence' is coined. John McCarthy, Marvin Minsky, and others gather for a summer workshop that marks the official birth of AI as a field.", quote: "Every aspect of learning or any other feature of intelligence can be so precisely described that a machine can be made to simulate it.", stats: ["Attendees: 10 key scientists", "Duration: 8 weeks", "Funding: Rockefeller Foundation"], link: "#" },
-            { era: 1, year: "1958", title: "Perceptron", img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop", desc: "Frank Rosenblatt invents the Perceptron, an electronic device that showed the ability to learn. It was the ancestor of modern neural networks.", quote: "The embryo of an electronic computer that [the Navy] expects will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.", stats: ["Hardware: IBM 704", "Input: 400 photocells", "Type: Linear Classifier"], link: "#" },
-            { era: 1, year: "1966", title: "ELIZA", img: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=800&auto=format&fit=crop", desc: "Joseph Weizenbaum creates ELIZA, a chatbot mimicking a Rogerian psychotherapist. It demonstrated the illusion of understanding through pattern matching.", quote: "I am sorry to hear you are depressed.", stats: ["Lines of Code: ~200", "Platform: SLIP", "Effect: The ELIZA Effect"], link: "#" },
-
-            // ERA 2: WINTERS (1974-1997)
-            { era: 2, year: "1980", title: "Expert Systems Boom", img: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=800&auto=format&fit=crop", desc: "XCON (eXpert CONfigurer) saves DEC millions. The industry shifts from general intelligence to specialized 'Expert Systems' that use if-then logic rules.", quote: "Knowledge is power.", stats: ["Savings: $40M/year for DEC", "Rules: ~2,500", "Language: OPS5"], link: "#" },
-            { era: 2, year: "1986", title: "Backpropagation", img: "https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop", desc: "Hinton, Rumelhart, and Williams popularize backpropagation, allowing multi-layer neural networks to learn effectively, thawing the AI winter.", quote: "It was the first efficient way to train deep networks.", stats: ["Paper Citations: 30,000+", "Key Concept: Gradient Descent", "Impact: Revived Connectionism"], link: "#" },
-            { era: 2, year: "1997", title: "Deep Blue vs. Kasparov", img: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=800&auto=format&fit=crop", desc: "IBM's Deep Blue defeats reigning world chess champion Garry Kasparov. A watershed moment proving machines could out-calculate human intuition in complex games.", quote: "I could feel - I could smell - a new kind of intelligence across the table.", stats: ["Compute: 200M positions/sec", "Score: 3.5 - 2.5", "Hardware: 32-node IBM SP2"], link: "#" },
-
-            // ERA 3: DEEP LEARNING (1997-2020)
-            { era: 3, year: "2012", title: "AlexNet / ImageNet", img: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop", desc: "A deep convolutional neural network (AlexNet) crushes the competition at the ImageNet challenge, reducing error rates by half and igniting the modern Deep Learning explosion.", quote: "The moment computer vision actually started working.", stats: ["Error Rate: 15.3% (prev 26%)", "GPUs used: 2 GTX 580s", "Layers: 8"], link: "#" },
-            { era: 3, year: "2016", title: "AlphaGo", img: "https://images.unsplash.com/photo-1580894894513-541e068a3e2b?q=80&w=800&auto=format&fit=crop", desc: "Google DeepMind's AlphaGo defeats Lee Sedol in Go, a game with more board configurations than atoms in the universe, using reinforcement learning.", quote: "Move 37 was not a human move.", stats: ["Watcher: 200M+ Worldwide", "Technique: MCTS + Neural Nets", "Hardware: TPUs"], link: "#" },
-            { era: 3, year: "2017", title: "Attention Is All You Need", img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop", desc: "Google researchers introduce the Transformer architecture. This parallelization mechanism forms the backbone of all modern LLMs (GPT, Claude, Gemini).", quote: "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms.", stats: ["Impact: Basis of GPT/BERT", "Citations: 80,000+", "Innovation: Self-Attention"], link: "#" },
-
-            // ERA 4: GENERATIVE (2020-2024)
-            { era: 4, year: "2020", title: "GPT-3 Release", img: "https://images.unsplash.com/photo-1655720031554-a929595ffad7?q=80&w=800&auto=format&fit=crop", desc: "OpenAI releases GPT-3. With 175 billion parameters, it demonstrates few-shot learning, writing code, poetry, and prose with uncanny coherence.", quote: "It was the first time AI felt creative.", stats: ["Parameters: 175 Billion", "Training Data: 45TB Text", "Cost: ~$4.6M to train"], link: "#" },
-            { era: 4, year: "2022", title: "ChatGPT", img: "https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=800&auto=format&fit=crop", desc: "OpenAI launches ChatGPT (GPT-3.5). It becomes the fastest-growing consumer app in history, reaching 100 million users in two months.", quote: "The iPhone moment for AI.", stats: ["Users: 1M in 5 days", "Tech: RLHF", "Valuation Impact: +$10B"], link: "#" },
-            { era: 4, year: "2024", title: "Sora & Multimodality", img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop", desc: "AI masters video physics. Sora generates minute-long realistic video from text. GPT-4o and Gemini 1.5 Pro handle audio, vision, and text in real-time.", quote: "Simulating the physical world.", stats: ["Context: 1M+ Tokens", "Modality: Native Audio/Video", "Realism: High fidelity"], link: "#" },
-
-            // ERA 5: REASONING (2025) - THE SPECIFIC REQUESTS
-            { 
-                era: 5, year: "Jan 2025", title: "DeepSeek-R1", 
-                img: "https://images.unsplash.com/photo-1555066931-4365a22eed35?q=80&w=800&auto=format&fit=crop", 
-                desc: "DeepSeek shocks the industry by releasing R1, an open-source reasoning model that rivals proprietary giants at a fraction of the training cost. It introduces 'Chain of Thought' verification at scale.", 
-                quote: "Open source just closed the gap.", 
-                stats: ["License: MIT/Apache", "Benchmark: MATH 92%", "Training Cost: <$5M"], 
-                link: "#" 
-            },
-            { 
-                era: 5, year: "Feb 2025", title: "Grok-3 & Claude 3.7", 
-                img: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop", 
-                desc: "A massive month. xAI's Grok-3 leverages real-time data from X to predict trends. Simultaneously, Anthropic releases Claude 3.7 Sonnet with significantly reduced hallucination rates.", 
-                quote: "Truthfulness is the new metric.", 
-                stats: ["Grok Context: Real-time Web", "Claude Speed: 2x Faster", "Safety: Constitutional AI v2"], 
-                link: "#" 
-            },
-            { 
-                era: 5, year: "Mar 2025", title: "Gemini 2.5 Pro", 
-                img: "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=800&auto=format&fit=crop", 
-                desc: "Google strikes back with Gemini 2.5. It integrates deeply into the Android OS, allowing for 'Agentic Action'—booking flights and replying to emails autonomously.", 
-                quote: "The assistant that actually assists.", 
-                stats: ["Context Window: 10 Million", "Integration: OS Level", "Modality: Native Multimodal"], 
-                link: "#" 
-            },
-            { 
-                era: 5, year: "May 2025", title: "Claude 4 Opus", 
-                img: "https://images.unsplash.com/photo-1535378437268-139939775e91?q=80&w=800&auto=format&fit=crop", 
-                desc: "Anthropic releases the behemoth: Claude 4 Opus. It achieves near-perfect scores on graduate-level reasoning and exhibits subtle nuance in creative writing previously thought impossible.", 
-                quote: "It feels like talking to a professor.", 
-                stats: ["Param Count: Est. 3 Trillion", "Nuance Score: 99/100", "Safety: Air-gapped"], 
-                link: "#" 
-            },
-            { 
-                era: 5, year: "Aug 2025", title: "GPT-5 & MAI-1", 
-                img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop", 
-                desc: "OpenAI releases the long-awaited GPT-5, featuring 'System 2' thinking (slow, deliberate reasoning). Microsoft simultaneously launches MAI-1 to power enterprise reasoning clusters.", 
-                quote: "Intelligence is now a utility.", 
-                stats: ["Reasoning: System 2 Native", "Parameters: Unknown", "Enterprise: Azure Native"], 
-                link: "#" 
-            },
-            { 
-                era: 5, year: "Sep 2025", title: "Claude Sonnet 4.5", 
-                img: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=80&w=800&auto=format&fit=crop", 
-                desc: "Anthropic optimizes the Opus architecture into Sonnet 4.5—delivering GPT-5 class performance at 1/10th the cost and speed, democratizing high-level reasoning for developers.", 
-                quote: "Efficiency is the new breakthrough.", 
-                stats: ["Cost: $1 / 1M tokens", "Speed: 200 tokens/sec", "Reasoning: Elite"], 
-                link: "#" 
-            },
-            { 
-                era: 5, year: "Nov 2025", title: "The Agentic Era", 
-                img: "https://images.unsplash.com/photo-1484589065579-248aad0d8b13?q=80&w=800&auto=format&fit=crop", 
-                desc: "OpenAI releases GPT-5.1 (o3 System) alongside Baidu's ERNIE 5.0. The focus shifts entirely from 'Chatbots' to 'Agents' that can execute complex, multi-step workflows autonomously over days.", 
-                quote: "Don't just chat. Do.", 
-                stats: ["Autonomy: Level 3", "Planning: Multi-day horizon", "Global Impact: Workforce Redefinition"], 
-                link: "#" 
-            },
-        ];
-
-        // --- 2. INITIALIZATION & RENDERING ---
-        const wrapper = document.querySelector('.wrapper');
-        const navRail = document.getElementById('nav-rail');
-
-        // Register GSAP plugins early
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
-        // Render cards first to populate DOM and set widths
-        function renderCards() {
-            events.forEach((evt, index) => {
-                const eraContainer = document.getElementById(`era-${evt.era}-cards`);
-                if (!eraContainer) return;
-
-                const card = document.createElement('article');
-                card.className = 'event-card';
-                card.setAttribute('data-index', index);
-                card.onclick = () => openModal(index);
-
-                let contentClass = "card-content";
-                if(evt.era === 5) {
-                    contentClass += " highlight"; // Adds .highlight class for CSS hook
-                }
-
-                card.innerHTML = `
-                    <div class="card-year">${evt.year}</div>
-                    <img src="${evt.img}" class="card-media" alt="${evt.title}" loading="lazy">
-                    <div class="${contentClass}">
-                        <div>
-                            <h3 class="card-title">${evt.title}</h3>
-                            <p class="card-summary">${evt.desc}</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> <span class="btn-read">Read more</span>
-                        </div>
-                    </div>
-                `;
-                eraContainer.appendChild(card);
-            });
-        }
-
-        renderCards();
-
-        // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
-        let lenis;
-
-        // Initialize Lenis after rendering
-        lenis = new Lenis({
-            // FIXED: We are scrolling the BODY horizontally
-            wrapper: document.body,
-            content: wrapper,
-            orientation: 'horizontal',
-            gestureOrientation: 'both', // Map vertical wheel to horizontal
-            syncTouch: ture,
-            smoothWheel: true,
-            mouseMultiplier: 1.0,
-            smoothTouch: true,
-            touchMultiplier: 1.5,
-        });
-
-
-        // **** START OF FIX ****
-        // This is the "connector" code. It tells ScrollTrigger to use
-        // Lenis's scroll position for all its calculations.
-        ScrollTrigger.scrollerProxy(document.body, {
-            scrollLeft(value) {
-                if (arguments.length) {
-                    lenis.scroll = value; // Set Lenis's scroll position
-                }
-                return lenis.scroll; // Get Lenis's scroll position
-            },
-            getBoundingClientRect() {
-                return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
-            }
-        });
-
-        // This tells GSAP to update Lenis on every animation frame
-        gsap.ticker.add((time)=>{
-            lenis.raf(time * 1000);
-        })
-        gsap.ticker.lagSmoothing(0);
-        
-        // This makes ScrollTrigger use the body for horizontal scrolling
-        ScrollTrigger.defaults({
-            scroller: document.body,
-            horizontal: true
-        });
-        // **** END OF FIX ****
-
-        // Resize Lenis after init to account for full content width
-        lenis.resize();
-
-        // Now render nav with lenis defined
-        function renderNav() {
-            const sections = document.querySelectorAll('.era-section');
-            sections.forEach((section, i) => {
-                const dot = document.createElement('div');
-                dot.className = 'nav-dot';
-                dot.title = section.querySelector('.era-title').innerText;
-                dot.onclick = () => {
-                    // FIXED: This now tells LENIS to scroll to the
-                    // horizontal offset of the correct section.
-                    lenis.scrollTo(section.offsetLeft, { 
-                        duration: 2, 
-                        ease: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) // easeOutExpo
-                    });
-                };
-                navRail.appendChild(dot);
-            });
-            // Set first dot active
-            if(navRail.children.length > 0) {
-                navRail.children[0].classList.add('active');
-            }
-        }
-
-        renderNav(); // Render nav after Lenis init
-        
-        // --- 4. ANIMATIONS & PARALLAX ---
-        let sections = gsap.utils.toArray(".era-section");
-    
-        sections.forEach((section, i) => {
-            const text = section.querySelector('.era-intro');
-            const cards = section.querySelector('.cards-wrapper');
             
-            // Animate the intro text
-            gsap.to(text, {
-                scrollTrigger: {
-                    trigger: section,
-                    start: "left 80%",
-                    end: "left 40%",
-                    scrub: 1,
-                    // markers: true, // Uncomment to debug
-                },
-                opacity: 1,
-                y: 0,
-                ease: "power3.out"
-            });
-
-            // Parallax for cards
-            gsap.fromTo(cards, 
-                { x: 100, opacity: 0 }, // from state
-                { // to state
-                    scrollTrigger: {
-                        trigger: section,
-                        start: "left 90%",
-                        end: "center 50%",
-                        scrub: 1,
-                    },
-                    x: 0,
-                    opacity: 1,
-                    ease: "power3.out" // Use a matching ease
-                }
-            );
-            
-            // Update Nav Dots on scroll
-            ScrollTrigger.create({
-                trigger: section,
-                start: "left center",
-                end: "right center",
-                onToggle: (self) => {
-                    if(self.isActive) {
-                        document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
-                        document.querySelectorAll('.nav-dot')[i]?.classList.add('active');
-                    }
-                }
-            });
-        });
-
-        // Refresh ScrollTrigger after all setup
-        ScrollTrigger.refresh();
-        // End of desktop-only logic
-
-
-        // --- 5. MODAL LOGIC ---
-        const modal = document.getElementById('modal');
-        const modalYear = document.getElementById('m-year');
-        const modalTitle = document.getElementById('m-title');
-        const modalImg = document.getElementById('m-img');
-        const modalDesc = document.getElementById('m-desc');
-        const modalQuote = document.getElementById('m-quote');
-        const modalLink = document.getElementById('m-link');
-        const modalStats = document.getElementById('m-stats');
-
-        function openModal(index) {
-            const data = events[index];
-            
-            // Populate Data
-            modalImg.src = data.img;
-            modalYear.innerText = data.year;
-            modalTitle.innerText = data.title;
-            modalDesc.innerText = data.desc;
-            modalQuote.innerText = `"${data.quote}"`;
-            modalLink.href = data.link;
-
-            // Populate Stats
-            modalStats.innerHTML = '';
-            data.stats.forEach(stat => {
-                const div = document.createElement('div');
-                div.className = 'stat-item';
-                const lowerStat = stat.toLowerCase();
-                let iconClass = 'fa-bolt';
-                if (lowerStat.includes('cost') || lowerStat.includes('price')) iconClass = 'fa-dollar-sign';
-                else if (lowerStat.includes('param') || lowerStat.includes('parameters')) iconClass = 'fa-cogs';
-                else if (lowerStat.includes('impact') || lowerStat.includes('effect')) iconClass = 'fa-chart-line';
-                else if (lowerStat.includes('speed') || lowerStat.includes('fast')) iconClass = 'fa-bolt';
-                div.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span class="stat-text">${stat}</span>`;
-                modalStats.appendChild(div);
-            });
-            
-            // Set accent colors
-            const eraName = document.querySelector(`[data-index="${index}"]`).closest('.era-section').dataset.era;
-            const eraColor = `var(--accent-${eraName})`;
-            modalYear.style.color = eraColor;
-            modalQuote.style.borderLeftColor = eraColor;
-            modalLink.style.color = eraColor;
-
-            // Show
-            modal.classList.add('active');
-            lenis.stop(); // Pause scrolling
-        }
-
-        function closeModal() {
-            modal.classList.remove('active');
-            lenis.start(); // Resume scrolling
-        }
-
-        // --- 6. SEARCH LOGIC ---
-        const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.event-card');
-            
-            cards.forEach((card, index) => {
-                const data = events[index];
-                const match = data.title.toLowerCase().includes(term) || 
-                              data.year.toLowerCase().includes(term) ||
-                              data.desc.toLowerCase().includes(term);
-                
-                if (term === "") {
-                    card.style.opacity = "1";
-                    card.style.filter = "none";
-                } else if (match) {
-                    const eraName = card.closest('.era-section').dataset.era;
-                    const eraColor = getComputedStyle(document.documentElement).getPropertyValue(`--accent-${eraName}`).trim();
-                    card.style.opacity = "1";
-                    card.style.filter = `brightness(1.2) drop-shadow(0 0 10px ${eraColor})`;
-                } else {
-                    card.style.opacity = "0.2";
-                    card.style.filter = "grayscale(1)";
-                }
-            });
-        });
-
-        // --- 7. KEYBOARD NAV ---
-        window.addEventListener('keydown', (e) => {
-            // Don't scroll if user is typing in search
-            if (e.target === searchInput) return;
-            
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                lenis.scroll += 500; // Use += to scroll *relative* to current pos
-            }
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                lenis.scroll -= 500;
-            }
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-    </script>
-    
-</body>
-</html>
-
