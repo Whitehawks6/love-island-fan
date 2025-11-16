@@ -44,8 +44,7 @@
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             /* Allow horizontal scroll, which Lenis will control */
-            overflow-x: auto;
-            overflow-y: hidden; 
+            overflow: hidden;
             overscroll-behavior-x: none;
             height: 100%;
             width: 100%;
@@ -550,19 +549,14 @@
             wrapper: document.body,
             content: wrapper,
             orientation: 'horizontal',
-            gestureOrientation: 'vertical', // Map vertical wheel to horizontal
+            gestureOrientation: 'both', // Map vertical wheel to horizontal
+            syncTouch: ture,
             smoothWheel: true,
             mouseMultiplier: 1.0,
             smoothTouch: true,
             touchMultiplier: 1.5,
         });
 
-        // This function runs the animation loop for Lenis
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
 
         // **** START OF FIX ****
         // This is the "connector" code. It tells ScrollTrigger to use
@@ -778,3 +772,4 @@
     
 </body>
 </html>
+
