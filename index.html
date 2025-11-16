@@ -504,6 +504,60 @@
         const navRail = document.getElementById('nav-rail');
         // REMOVED isMobile CHECK
 
+        // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
+        let lenis;
+
+        // Register GSAP plugins early
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        // Initialize Lenis early
+        lenis = new Lenis({
+            // FIXED: We are scrolling the BODY horizontally
+            wrapper: document.body,
+            content: wrapper,
+            orientation: 'horizontal',
+            gestureOrientation: 'vertical', // Map vertical wheel to horizontal
+            smoothWheel: true,
+            mouseMultiplier: 1.0,
+            smoothTouch: true,
+            touchMultiplier: 1.5,
+        });
+
+        // This function runs the animation loop for Lenis
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // **** START OF FIX ****
+        // This is the "connector" code. It tells ScrollTrigger to use
+        // Lenis's scroll position for all its calculations.
+        ScrollTrigger.scrollerProxy(document.body, {
+            scrollLeft(value) {
+                if (arguments.length) {
+                    lenis.scroll = value; // Set Lenis's scroll position
+                }
+                return lenis.scroll; // Get Lenis's scroll position
+            },
+            getBoundingClientRect() {
+                return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
+            }
+        });
+
+        // This tells GSAP to update Lenis on every animation frame
+        gsap.ticker.add((time)=>{
+            lenis.raf(time * 1000);
+        })
+        gsap.ticker.lagSmoothing(0);
+        
+        // This makes ScrollTrigger use the body for horizontal scrolling
+        ScrollTrigger.defaults({
+            scroller: document.body,
+            horizontal: true
+        });
+        // **** END OF FIX ****
+
         function renderCards() {
             events.forEach((evt, index) => {
                 const eraContainer = document.getElementById(`era-${evt.era}-cards`);
@@ -561,61 +615,6 @@
         renderCards();
         renderNav(); // Render nav regardless of mobile
         
-        // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
-        let lenis;
-
-        // Initialize Lenis
-        lenis = new Lenis({
-            // FIXED: We are scrolling the BODY horizontally
-            wrapper: document.body,
-            content: wrapper,
-            orientation: 'horizontal',
-            gestureOrientation: 'vertical', // Map vertical wheel to horizontal
-            smoothWheel: true,
-            mouseMultiplier: 1.0,
-            smoothTouch: true,
-            touchMultiplier: 1.5,
-        });
-
-        // This function runs the animation loop for Lenis
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-
-        // This is the main horizontal scroll animation
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
-        // **** START OF FIX ****
-        // This is the "connector" code. It tells ScrollTrigger to use
-        // Lenis's scroll position for all its calculations.
-        ScrollTrigger.scrollerProxy(document.body, {
-            scrollLeft(value) {
-                if (arguments.length) {
-                    lenis.scroll = value; // Set Lenis's scroll position
-                }
-                return lenis.scroll; // Get Lenis's scroll position
-            },
-            getBoundingClientRect() {
-                return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
-            }
-        });
-
-        // This tells GSAP to update Lenis on every animation frame
-        gsap.ticker.add((time)=>{
-            lenis.raf(time * 1000);
-        })
-        gsap.ticker.lagSmoothing(0);
-        
-        // This makes ScrollTrigger use the body for horizontal scrolling
-        ScrollTrigger.defaults({
-            scroller: document.body,
-            horizontal: true
-        });
-        // **** END OF FIX ****
-
-
         // --- 4. ANIMATIONS & PARALLAX ---
         let sections = gsap.utils.toArray(".era-section");
     
