@@ -32,14 +32,29 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        /* FIXED: Native Horizontal Scroll Setup */
+        html {
+            overflow: hidden; /* Hide all scrollbars */
+            height: 100%;
+            width: 100%;
+        }
+
         body {
             background-color: var(--bg);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* We handle horizontal via transform */
-            overflow-y: hidden; /* Hide scrollbar */
-            overscroll-behavior: none;
-            height: 100vh;
+            /* Allow horizontal scroll, which Lenis will control */
+            overflow-x: auto;
+            overflow-y: hidden; 
+            overscroll-behavior-x: none;
+            height: 100%;
+            width: 100%;
+            /* Hide the actual scrollbar */
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        body::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
         }
 
         h1, h2, h3, .era-title { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.03em; }
@@ -61,21 +76,13 @@
         }
 
         /* --- Main Container --- */
-        .outer-wrapper {
-             height: 500vh; /* This is the "fake" height that we scroll */
-             width: 100vw;
-             position: relative;
-        }
-
+        /* FIXED: No more outer-wrapper. This is the main scrolling element. */
         .wrapper {
             display: flex;
             flex-wrap: nowrap;
             height: 100vh;
             width: max-content; /* Will stretch based on content */
             will-change: transform;
-            position: fixed;
-            top: 0;
-            left: 0;
         }
 
         /* --- Era Sections --- */
@@ -89,8 +96,9 @@
         }
 
         .era-intro {
-            min-width: 40vw;
-            max-width: 50vw;
+            /* FIXED: User's requested change */
+            min-width: 25vw;
+            max-width: 35vw;
             padding-right: 4rem;
             opacity: 0; /* Animate in */
             transform: translateY(20px);
@@ -169,7 +177,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 50%;
+            height: 50%; /* flex-grow: 1 also works */
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
 
@@ -319,8 +327,6 @@
         }
         .stat-item i { color: var(--text-muted); margin-right: 8px; }
         .stat-text { font-size: 0.9rem; }
-
-        /* --- MOBILE STYLES REMOVED --- */
         
     </style>
 </head>
@@ -334,56 +340,54 @@
         <input type="text" id="search-input" placeholder="Search (e.g., 'DeepSeek', 'GPT-5')...">
     </div>
 
-    <div class="outer-wrapper">
-        <div class="wrapper">
-            
-            <section class="era-section" data-era="dream">
-                <div class="era-intro">
-                    <span class="era-label">1950 – 1974</span>
-                    <h2 class="era-title">The Dream</h2>
-                    <p class="era-desc">From Turing's imitation game to the first neural networks. A time of boundless optimism where machines were taught to play checkers and speak simple English.</p>
-                </div>
-                <div class="cards-wrapper" id="era-1-cards"></div>
-            </section>
+    <div class="wrapper">
+        
+        <section class="era-section" data-era="dream">
+            <div class="era-intro">
+                <span class="era-label">1950 – 1974</span>
+                <h2 class="era-title">The Dream</h2>
+                <p class="era-desc">From Turing's imitation game to the first neural networks. A time of boundless optimism where machines were taught to play checkers and speak simple English.</p>
+            </div>
+            <div class="cards-wrapper" id="era-1-cards"></div>
+        </section>
 
-            <section class="era-section" data-era="winters">
-                <div class="era-intro">
-                    <span class="era-label">1974 – 1997</span>
-                    <h2 class="era-title">Winters &amp; Experts</h2>
-                    <p class="era-desc">Funding dried up as promises fell short. The field pivoted to logic-based "Expert Systems" until Deep Blue shocked the world by defeating a chess grandmaster.</p>
-                </div>
-                <div class="cards-wrapper" id="era-2-cards"></div>
-            </section>
+        <section class="era-section" data-era="winters">
+            <div class="era-intro">
+                <span class="era-label">1974 – 1997</span>
+                <h2 class="era-title">Winters &amp; Experts</h2>
+                <p class="era-desc">Funding dried up as promises fell short. The field pivoted to logic-based "Expert Systems" until Deep Blue shocked the world by defeating a chess grandmaster.</p>
+            </div>
+            <div class="cards-wrapper" id="era-2-cards"></div>
+        </section>
 
-            <section class="era-section" data-era="deep">
-                <div class="era-intro">
-                    <span class="era-label">1997 – 2020</span>
-                    <h2 class="era-title">Deep Learning</h2>
-                    <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
-                </div>
-                <div class="cards-wrapper" id="era-3-cards"></div>
-            </section>
+        <section class="era-section" data-era="deep">
+            <div class="era-intro">
+                <span class="era-label">1997 – 2020</span>
+                <h2 class="era-title">Deep Learning</h2>
+                <p class="era-desc">Big data met GPU compute. Neural networks layered deeper than ever before, cracking vision (ImageNet), games (AlphaGo), and the architecture of language (Transformers).</p>
+            </div>
+            <div class="cards-wrapper" id="era-3-cards"></div>
+        </section>
 
-            <section class="era-section" data-era="gen">
-                <div class="era-intro">
-                    <span class="era-label">2020 – 2024</span>
-                    <h2 class="era-title">Generative Explosion</h2>
-                    <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
-                </div>
-                <div class="cards-wrapper" id="era-4-cards"></div>
-            </section>
+        <section class="era-section" data-era="gen">
+            <div class="era-intro">
+                <span class="era-label">2020 – 2024</span>
+                <h2 class="era-title">Generative Explosion</h2>
+                <p class="era-desc">AI learned to create. LLMs reached human parity on tests, art generators disrupted creativity, and ChatGPT brought AI into every home.</p>
+            </div>
+            <div class="cards-wrapper" id="era-4-cards"></div>
+        </section>
 
-             <section class="era-section" data-era="agent">
-                <div class="era-intro">
-                    <span class="era-label highlight">2025</span>
-                    <h2 class="era-title highlight">Reasoning &amp; Agents</h2>
-                    <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
-                </div>
-                <div class="cards-wrapper" id="era-5-cards"></div>
-            </section>
+         <section class="era-section" data-era="agent">
+            <div class="era-intro">
+                <span class="era-label highlight">2025</span>
+                <h2 class="era-title highlight">Reasoning &amp; Agents</h2>
+                <p class="era-desc">The year AI began to <em>think</em> before speaking. Open reasoning models, massive context windows, and autonomous agents redefined the digital economy.</p>
+            </div>
+            <div class="cards-wrapper" id="era-5-cards"></div>
+        </section>
 
-            <div style="width: 10vw; flex-shrink: 0;"></div>
-        </div>
+        <div style="width: 10vw; flex-shrink: 0;"></div>
     </div>
 
     <nav class="nav-rail" id="nav-rail"></nav>
@@ -540,11 +544,11 @@
                 dot.className = 'nav-dot';
                 dot.title = section.querySelector('.era-title').innerText;
                 dot.onclick = () => {
-                    // Scroll to that section using GSAP
-                    gsap.to(window, { 
-                        scrollTo: { y: section.offsetTop, autoKill: false }, 
-                        duration: 1.5, 
-                        ease: "power2.inOut"
+                    // FIXED: This now tells LENIS to scroll to the
+                    // horizontal offset of the correct section.
+                    lenis.scrollTo(section.offsetLeft, { 
+                        duration: 2, 
+                        ease: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) // easeOutExpo
                     });
                 };
                 navRail.appendChild(dot);
@@ -556,27 +560,23 @@
         }
 
         renderCards();
+        renderNav(); // Render nav regardless of mobile
         
         // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
         let lenis;
 
-        // REMOVED if(!isMobile) - This code will now run for all users
-        
         // Initialize Lenis
-        lenis = new Lenis();
-
-        // **** START OF FIX ****
-        // This is the "connector" code
-        // It tells ScrollTrigger to use Lenis's scroll position
-        lenis.on('scroll', ScrollTrigger.update);
-
-        // This tells GSAP to update Lenis on every animation frame
-        gsap.ticker.add((time)=>{
-            lenis.raf(time * 1000);
-        })
-        gsap.ticker.lagSmoothing(0);
-        // **** END OF FIX ****
-
+        lenis = new Lenis({
+            // FIXED: We are scrolling the BODY horizontally
+            wrapper: document.body,
+            content: wrapper,
+            orientation: 'horizontal',
+            gestureOrientation: 'vertical', // Map vertical wheel to horizontal
+            smoothWheel: true,
+            mouseMultiplier: 1.0,
+            smoothTouch: true,
+            touchMultiplier: 1.5,
+        });
 
         // This function runs the animation loop for Lenis
         function raf(time) {
@@ -588,31 +588,37 @@
         // This is the main horizontal scroll animation
         gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-        let sections = gsap.utils.toArray(".era-section");
-        let horizontalScroll = gsap.to(wrapper, {
-            xPercent: -100 * (sections.length - 1),
-            ease: "none",
-            scrollTrigger: {
-                trigger: ".outer-wrapper",
-                pin: true,
-                scrub: 1,
-                // **** MODIFIED SNAP ****
-                // This tells GSAP to wait for Lenis's momentum
-                // to stop before snapping.
-                snap: {
-                    snapTo: 1 / (sections.length - 1), // Snap to the closest section
-                    duration: { min: 0.2, max: 0.6 },  // Use a duration range
-                    delay: 0.15,                       // Wait 0.15s after scroll stops to snap
-                    ease: "power1.inOut"               // A gentler ease
-                },
-                end: () => "+=" + (wrapper.offsetWidth - window.innerWidth)
+        // **** START OF FIX ****
+        // This is the "connector" code. It tells ScrollTrigger to use
+        // Lenis's scroll position for all its calculations.
+        ScrollTrigger.scrollerProxy(document.body, {
+            scrollLeft(value) {
+                if (arguments.length) {
+                    lenis.scroll = value; // Set Lenis's scroll position
+                }
+                return lenis.scroll; // Get Lenis's scroll position
+            },
+            getBoundingClientRect() {
+                return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
             }
         });
 
-        // Render nav dots
-        renderNav();
+        // This tells GSAP to update Lenis on every animation frame
+        gsap.ticker.add((time)=>{
+            lenis.raf(time * 1000);
+        })
+        gsap.ticker.lagSmoothing(0);
+        
+        // This makes ScrollTrigger use the body for horizontal scrolling
+        ScrollTrigger.defaults({
+            scroller: document.body,
+            horizontal: true
+        });
+        // **** END OF FIX ****
+
 
         // --- 4. ANIMATIONS & PARALLAX ---
+        let sections = gsap.utils.toArray(".era-section");
     
         sections.forEach((section, i) => {
             const text = section.querySelector('.era-intro');
@@ -622,14 +628,13 @@
             gsap.to(text, {
                 scrollTrigger: {
                     trigger: section,
-                    containerAnimation: horizontalScroll,
-                    start: "left center",
-                    end: "right center",
-                    toggleActions: "play reverse play reverse",
+                    start: "left 80%",
+                    end: "left 40%",
+                    scrub: 1,
+                    // markers: true, // Uncomment to debug
                 },
                 opacity: 1,
                 y: 0,
-                duration: 1,
                 ease: "power3.out"
             });
 
@@ -639,9 +644,8 @@
                 { // to state
                     scrollTrigger: {
                         trigger: section,
-                        containerAnimation: horizontalScroll,
-                        start: "left 80%",
-                        end: "center center",
+                        start: "left 90%",
+                        end: "center 50%",
                         scrub: 1,
                     },
                     x: 0,
@@ -653,7 +657,6 @@
             // Update Nav Dots on scroll
             ScrollTrigger.create({
                 trigger: section,
-                containerAnimation: horizontalScroll,
                 start: "left center",
                 end: "right center",
                 onToggle: (self) => {
@@ -706,12 +709,12 @@
 
             // Show
             modal.classList.add('active');
-            if (lenis) lenis.stop(); // Pause scrolling
+            lenis.stop(); // Pause scrolling
         }
 
         function closeModal() {
             modal.classList.remove('active');
-            if (lenis) lenis.start(); // Resume scrolling
+            lenis.start(); // Resume scrolling
         }
 
         // --- 6. SEARCH LOGIC ---
@@ -744,11 +747,13 @@
             // Don't scroll if user is typing in search
             if (e.target === searchInput) return;
             
-            if (e.key === 'ArrowRight' && lenis) {
-                lenis.scrollTo(lenis.scroll + 500, { duration: 0.5 }); // Added duration
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                lenis.scroll += 500; // Use += to scroll *relative* to current pos
             }
-            if (e.key === 'ArrowLeft' && lenis) {
-                lenis.scrollTo(lenis.scroll - 500, { duration: 0.5 }); // Added duration
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                lenis.scroll -= 500;
             }
             if (e.key === 'Escape') {
                 closeModal();
