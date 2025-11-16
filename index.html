@@ -502,15 +502,49 @@
         // --- 2. INITIALIZATION & RENDERING ---
         const wrapper = document.querySelector('.wrapper');
         const navRail = document.getElementById('nav-rail');
-        // REMOVED isMobile CHECK
-
-        // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
-        let lenis;
 
         // Register GSAP plugins early
         gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-        // Initialize Lenis early
+        // Render cards first to populate DOM and set widths
+        function renderCards() {
+            events.forEach((evt, index) => {
+                const eraContainer = document.getElementById(`era-${evt.era}-cards`);
+                if (!eraContainer) return;
+
+                const card = document.createElement('article');
+                card.className = 'event-card';
+                card.setAttribute('data-index', index);
+                card.onclick = () => openModal(index);
+
+                let contentClass = "card-content";
+                if(evt.era === 5) {
+                    contentClass += " highlight"; // Adds .highlight class for CSS hook
+                }
+
+                card.innerHTML = `
+                    <div class="card-year">${evt.year}</div>
+                    <img src="${evt.img}" class="card-media" alt="${evt.title}" loading="lazy">
+                    <div class="${contentClass}">
+                        <div>
+                            <h3 class="card-title">${evt.title}</h3>
+                            <p class="card-summary">${evt.desc}</p>
+                        </div>
+                        <div class="card-footer">
+                            <i class="fa-solid fa-arrow-right-long"></i> <span class="btn-read">Read more</span>
+                        </div>
+                    </div>
+                `;
+                eraContainer.appendChild(card);
+            });
+        }
+
+        renderCards();
+
+        // --- 3. HORIZONTAL SCROLL LOGIC (GSAP + LENIS) ---
+        let lenis;
+
+        // Initialize Lenis after rendering
         lenis = new Lenis({
             // FIXED: We are scrolling the BODY horizontally
             wrapper: document.body,
@@ -558,38 +592,10 @@
         });
         // **** END OF FIX ****
 
-        function renderCards() {
-            events.forEach((evt, index) => {
-                const eraContainer = document.getElementById(`era-${evt.era}-cards`);
-                if (!eraContainer) return;
+        // Resize Lenis after init to account for full content width
+        lenis.resize();
 
-                const card = document.createElement('article');
-                card.className = 'event-card';
-                card.setAttribute('data-index', index);
-                card.onclick = () => openModal(index);
-
-                let contentClass = "card-content";
-                if(evt.era === 5) {
-                    contentClass += " highlight"; // Adds .highlight class for CSS hook
-                }
-
-                card.innerHTML = `
-                    <div class="card-year">${evt.year}</div>
-                    <img src="${evt.img}" class="card-media" alt="${evt.title}" loading="lazy">
-                    <div class="${contentClass}">
-                        <div>
-                            <h3 class="card-title">${evt.title}</h3>
-                            <p class="card-summary">${evt.desc}</p>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-arrow-right-long"></i> <span class="btn-read">Read more</span>
-                        </div>
-                    </div>
-                `;
-                eraContainer.appendChild(card);
-            });
-        }
-
+        // Now render nav with lenis defined
         function renderNav() {
             const sections = document.querySelectorAll('.era-section');
             sections.forEach((section, i) => {
@@ -612,8 +618,7 @@
             }
         }
 
-        renderCards();
-        renderNav(); // Render nav regardless of mobile
+        renderNav(); // Render nav after Lenis init
         
         // --- 4. ANIMATIONS & PARALLAX ---
         let sections = gsap.utils.toArray(".era-section");
@@ -665,6 +670,9 @@
                 }
             });
         });
+
+        // Refresh ScrollTrigger after all setup
+        ScrollTrigger.refresh();
         // End of desktop-only logic
 
 
